@@ -1,0 +1,146 @@
+﻿<div class="page-content" style="top:156px; padding-bottom:100px;">
+            <div class="scroll-content">
+
+                <div class="filter-bar">
+                    <button class="filter-chip active">物理</button>
+                    <button class="filter-chip">数学</button>
+                </div>
+
+                <!-- Chapter: 力学 -->
+                <div class="tree-l1">
+                    <div class="tree-l1-header open" onclick="toggleTree(this)">
+                        <span class="tree-expand"></span>
+                        <span class="tree-l1-title">力学</span>
+                        <span class="level-badge l3">L3</span>
+                    </div>
+                    <div class="tree-l2">
+
+                        <!-- Model: 匀变速直线运动 -->
+                        <div class="tree-l2-item"
+                            onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                            <span class="level-dot l4" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">匀变速直线运动</span>
+                            <span class="level-badge l4">L4</span>
+                        </div>
+                        <div class="tree-l3" style="display:none;">
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">加速问题</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">减速问题</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">追及问题</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                        </div>
+
+                        <!-- Model: 牛顿第二定律应用 -->
+                        <div class="tree-l2-item"
+                            onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                            <span class="level-dot l3" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">牛顿第二定律应用</span>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span class="tag tag-outline" style="font-size:9px; padding:1px 6px;">不稳定</span>
+                                <span class="level-badge l3">L3</span>
+                            </div>
+                        </div>
+                        <div class="tree-l3" style="display:none;">
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">单物体</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">连接体</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                        </div>
+
+                        <!-- Model: 板块运动 -->
+                        <div class="tree-l2-item"
+                            onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                            <span class="level-dot l1" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">板块运动</span>
+                            <span class="level-badge l1">L1</span>
+                        </div>
+                        <div class="tree-l3" style="display:none;">
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">相对滑动</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">共速问题</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                        </div>
+
+                        <!-- Model: 动能定理 -->
+                        <div class="tree-l2-item"
+                            onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                            <span class="level-dot l4" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">动能定理</span>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span class="tag tag-blue" style="font-size:9px; padding:1px 6px;">跨: 能量</span>
+                                <span class="level-badge l4">L4</span>
+                            </div>
+                        </div>
+                        <div class="tree-l3" style="display:none;">
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">单过程</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                            <div class="tree-l3-item" onclick="navigateTo('model-detail.html')">
+                                <span class="tree-l3-title">多过程</span>
+                                <span class="list-chevron"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter: 静电场 -->
+                <div class="tree-l1">
+                    <div class="tree-l1-header" onclick="toggleTree(this)">
+                        <span class="tree-expand"></span>
+                        <span class="tree-l1-title">静电场</span>
+                        <span class="level-badge l1">L1</span>
+                    </div>
+                    <div class="tree-l2" style="display:none;">
+                        <div class="tree-l2-item" onclick="navigateTo('model-detail.html')">
+                            <span class="level-dot l2" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">库仑力平衡</span>
+                            <span class="level-badge l2">L2</span>
+                        </div>
+                        <div class="tree-l2-item" onclick="navigateTo('model-detail.html')">
+                            <span class="level-dot l0" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">电场中的功能关系</span>
+                            <span class="level-badge l0">L0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter: 电磁感应 -->
+                <div class="tree-l1">
+                    <div class="tree-l1-header" onclick="toggleTree(this)">
+                        <span class="tree-expand"></span>
+                        <span class="tree-l1-title">电磁感应</span>
+                        <span class="level-badge l0">L0</span>
+                    </div>
+                    <div class="tree-l2" style="display:none;">
+                        <div class="tree-l2-item" onclick="navigateTo('model-detail.html')">
+                            <span class="level-dot l1" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">单棒切割</span>
+                            <span class="level-badge l1">L1</span>
+                        </div>
+                        <div class="tree-l2-item" onclick="navigateTo('model-detail.html')">
+                            <span class="level-dot l0" style="margin-right:10px;"></span>
+                            <span class="tree-l2-title">磁流体发电机</span>
+                            <span class="level-badge l0">L0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height:20px;"></div>
+            </div>
+        </div>

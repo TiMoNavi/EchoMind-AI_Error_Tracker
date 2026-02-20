@@ -1,0 +1,65 @@
+﻿<div class="page-content" style="top:156px; padding-bottom:100px;">
+            <div class="scroll-content">
+
+                <!-- Exam Paper Heatmap -->
+                <div class="section-header" style="padding-top:8px;">
+                    <span class="section-title" style="font-size:var(--font-md);">卷面热力图</span>
+                    <span style="font-size:var(--font-sm); color:var(--text-secondary);">目标 70 分</span>
+                </div>
+
+                <div class="card" style="padding:12px;">
+                    <!-- Legend -->
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; font-size:10px;">
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--blue-600);"></span>稳了</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--blue-200);"></span>不错</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-800);"></span>需练</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-500);"></span>提升</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-150);"></span>可放弃</span>
+                    </div>
+
+                    <div class="heatmap">
+                        <!-- 选择题 1-8 -->
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">1</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">2</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">3</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">4</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-danger" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">5</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">6</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">7</span><span class="q-score">6分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">8</span><span class="q-score">6分</span></div>
+                        <!-- 实验题 -->
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">9</span><span class="q-score">8分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">10</span><span class="q-score">7分</span></div>
+                        <!-- 计算题 -->
+                        <div class="heatmap-cell hm-danger" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题1</span><span
+                                class="q-score">12分</span></div>
+                        <div class="heatmap-cell hm-warn" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题2</span><span
+                                class="q-score">14分</span></div>
+                        <div class="heatmap-cell hm-skip" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题3</span><span
+                                class="q-score">18分</span></div>
+                        <!-- 选做 -->
+                        <div class="heatmap-cell hm-good" style="grid-column:span 3; aspect-ratio:3/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">选做题</span><span
+                                class="q-score">15分</span></div>
+                    </div>
+                </div>
+
+  

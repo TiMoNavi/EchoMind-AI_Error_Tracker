@@ -1,0 +1,42 @@
+﻿<!-- FAB (+) Button -->
+<button class="fab" onclick="showModal('upload-modal')">+</button>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="upload-modal" onclick="hideModal('upload-modal')">
+  <div class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:var(--font-lg); font-weight:600; margin-bottom:16px;">新建</div>
+
+    <div class="list-group" style="margin:0; box-shadow:none; border:1px solid var(--border-color);">
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--gray-900); color:#fff;">HW</div>
+        <div class="list-body">
+          <div class="list-label">上传作业</div>
+          <div class="list-desc">拍照上传今日作业, 标记对错</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--gray-600); color:#fff;">QK</div>
+        <div class="list-body">
+          <div class="list-label">极简上传</div>
+          <div class="list-desc">快速记录最近做过的练习</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--accent); color:#fff;">EX</div>
+        <div class="list-body">
+          <div class="list-label">上传考试卷子</div>
+          <div class="list-desc">模考/真题卷, 按题号归档</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" style="margin-top:16px;" onclick="hideModal('upload-modal')">取消</button>
+  </div>
+</div>
+
+<!-- Tab Bar (injected by JS) -->
+

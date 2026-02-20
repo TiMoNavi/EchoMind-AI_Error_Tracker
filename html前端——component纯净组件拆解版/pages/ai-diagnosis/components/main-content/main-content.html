@@ -1,0 +1,75 @@
+﻿<div class="page-content with-nav" style="padding-bottom:90px;">
+            <div class="scroll-content">
+
+                <!-- Question Reference -->
+                <div style="padding:8px 16px;">
+                    <div
+                        style="background:var(--gray-50); border-radius:var(--radius-md); padding:10px 14px; font-size:var(--font-sm); color:var(--text-secondary);">
+                        <span style="font-weight:600;">当前诊断:</span> 2025天津模拟(一) 第5题 -- 板块运动
+                    </div>
+                </div>
+
+                <!-- Diagnosis Chat -->
+                <div class="chat-container">
+                    <div class="chat-bubble ai">
+                        你好! 我来帮你分析这道题错在哪里。
+                        <br><br>
+                        这道题是一个板块运动问题。我会一层一层地定位你的问题所在。
+                        <br><br>
+                        首先, 第一层: <strong>识别层</strong>。当你看到这道题的时候, 你能判断出这是一道什么类型的题目吗?
+                    </div>
+                    <div class="chat-bubble user">
+                        我知道是板块运动
+                    </div>
+                    <div class="chat-bubble ai">
+                        很好, 你能正确识别题型。那么第二层: <strong>建模层</strong>。你能说一下, 拿到这道板块运动题后, 你是怎么开始分析的? 第一步做了什么?
+                    </div>
+                    <div class="chat-bubble user">
+                        我对物块受力分析, 然后写出方程
+                    </div>
+                    <div class="chat-bubble ai">
+                        你有没有同时对木板也做受力分析? 板块运动一定要 <strong>分别</strong> 对两个物体受力分析, 然后分别列方程。
+                        <br><br>
+                        你当时只分析了物块, 对吗?
+                    </div>
+                    <div class="chat-bubble user">
+                        好像是的, 我忘记分析木板了
+                    </div>
+                    <div class="chat-bubble ai" style="border:2px solid var(--accent);">
+                        <div style="font-size:var(--font-xs); color:var(--accent); font-weight:600; margin-bottom:6px;">
+                            诊断结果</div>
+                        <div style="font-weight:600; margin-bottom:4px;">建模层出错 -- 分析不完整</div>
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary);">你能正确识别板块运动,
+                            但在建模阶段遗漏了对木板的受力分析, 导致无法列出完整的方程组。</div>
+                    </div>
+
+                    <!-- Diagnosis Result Card -->
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-section">
+                            <div class="label">错误层级</div>
+                            <div style="font-weight:600; font-size:var(--font-md);">建模层 (Layer 2)</div>
+                        </div>
+                        <div class="diagnosis-section">
+                            <div class="label">错误子类型</div>
+                            <div style="font-weight:600;">分析对象遗漏</div>
+                            <div style="font-size:var(--font-sm); color:var(--text-secondary);">在多物体问题中, 只对部分物体进行了受力分析
+                            </div>
+                        </div>
+                        <div class="diagnosis-section">
+                            <div class="label">影响</div>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <span class="tag tag-dark">板块运动 L1 -> L1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions after diagnosis -->
+                    <div style="padding:0 0 8px;">
+                        <button class="btn btn-primary" onclick="navigateTo('model-training.html')"
+                            style="margin-bottom:8px;">开始针对性训练</button>
+                        <button class="btn btn-secondary" onclick="navigateTo('question-detail.html')">返回题目</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>

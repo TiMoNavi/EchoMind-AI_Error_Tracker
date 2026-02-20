@@ -1,0 +1,48 @@
+﻿<!-- Scrollable Content -->
+<div class="page-content" style="top:110px;">
+<div class="scroll-content">
+
+  <!-- Today Stats -->
+  <div class="stat-row" style="margin-top:4px;">
+    <div class="stat-card">
+      <div class="stat-value">3</div>
+      <div class="stat-label">今日闭环</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">2h25m</div>
+      <div class="stat-label">学习时长</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">12</div>
+      <div class="stat-label">本周闭环</div>
+    </div>
+  </div>
+
+  <!-- Prediction Entry -->
+  <div class="card" style="margin-top:12px; cursor:pointer;" onclick="navigateTo('prediction-center.html')">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:var(--font-sm); color:var(--text-secondary); font-weight:500;">预测分数</div>
+        <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
+          <span class="score-big" style="font-size:40px;">63</span>
+          <span class="score-unit" style="font-size:var(--font-base);">/ 100</span>
+        </div>
+        <div style="font-size:var(--font-sm); color:var(--accent); margin-top:4px; font-weight:500;">
+          目标 70 分 -- 查看预测详情
+        </div>
+      </div>
+      <div style="width:100px; height:50px;">
+        <svg id="mini-trend" class="trend-svg" style="width:100%;height:100%;"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Start -->
+  <div style="padding:0 16px; margin-top:12px;">
+    <button class="btn btn-primary" onclick="navigateTo('model-training.html')" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+      <span>快速开始</span>
+      <span style="font-size:var(--font-sm); opacity:0.8;">-- 板块运动 (约5分钟)</span>
+    </button>
+  </div>
+
+  
