@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>上传历史</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('index.html')">返回</button>
+            <span class="nav-title">上传历史</span>
+        </div>
+
+        <div class="page-content with-nav" style="padding-bottom:40px;">
+            <div class="scroll-content">
+
+                <!-- Filter -->
+                <div class="filter-bar">
+                    <button class="filter-chip active">全部</button>
+                    <button class="filter-chip">待诊断</button>
+                    <button class="filter-chip">已完成</button>
+                    <button class="filter-chip">作业</button>
+                    <button class="filter-chip">考试</button>
+                </div>
+
+                <!-- Today -->
+                <div
+                    style="padding:12px 16px 4px; font-size:var(--font-sm); font-weight:600; color:var(--text-secondary);">
+                    今天</div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div class="list-icon" style="background:var(--gray-900); color:#fff; font-size:10px;">HW</div>
+                        <div class="list-body">
+                            <div class="list-label">作业 -- 力学练习</div>
+                            <div class="list-desc">3道错题 -- 1道已诊断, 2道待诊断</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                            <span style="font-size:var(--font-xs); color:var(--text-secondary);">14:30</span>
+                            <span class="tag tag-dark" style="font-size:9px;">2待诊断</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feb 8 -->
+                <div
+                    style="padding:12px 16px 4px; font-size:var(--font-sm); font-weight:600; color:var(--text-secondary);">
+                    2月8日</div>
+
+                <div class="list-group">
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--accent); color:#fff; font-size:10px;">EX</div>
+                        <div class="list-body">
+                            <div class="list-label">2025天津模拟卷(一)</div>
+                            <div class="list-desc">6道错题 -- 3道待诊断</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                            <span style="font-size:var(--font-xs); color:var(--text-secondary);">10:15</span>
+                            <span class="tag tag-dark" style="font-size:9px;">3待诊断</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feb 5 -->
+                <div
+                    style="padding:12px 16px 4px; font-size:var(--font-sm); font-weight:600; color:var(--text-secondary);">
+                    2月5日</div>
+
+                <div class="list-group">
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--gray-900); color:#fff; font-size:10px;">HW</div>
+                        <div class="list-body">
+                            <div class="list-label">作业 -- 电场练习</div>
+                            <div class="list-desc">2道错题 -- 全部已诊断</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                            <span style="font-size:var(--font-xs); color:var(--text-secondary);">16:42</span>
+                            <span class="tag tag-gray" style="font-size:9px;">已完成</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feb 3 -->
+                <div
+                    style="padding:12px 16px 4px; font-size:var(--font-sm); font-weight:600; color:var(--text-secondary);">
+                    2月3日</div>
+
+                <div class="list-group">
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--accent); color:#fff; font-size:10px;">EX</div>
+                        <div class="list-body">
+                            <div class="list-label">2024天津高考真题</div>
+                            <div class="list-desc">8道错题 -- 全部已诊断</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                            <span style="font-size:var(--font-xs); color:var(--text-secondary);">09:30</span>
+                            <span class="tag tag-gray" style="font-size:9px;">已完成</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--gray-600); color:#fff; font-size:10px;">QK</div>
+                        <div class="list-body">
+                            <div class="list-label">极简上传 -- 5道题</div>
+                            <div class="list-desc">1道错题 -- 已诊断</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                            <span style="font-size:var(--font-xs); color:var(--text-secondary);">20:10</span>
+                            <span class="tag tag-gray" style="font-size:9px;">已完成</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height:40px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

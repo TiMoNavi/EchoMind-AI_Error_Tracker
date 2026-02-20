@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>模型训练</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('model-detail.html')">返回</button>
+            <span class="nav-title">板块运动 -- 训练</span>
+        </div>
+
+        <!-- 6-Step Progress -->
+        <div class="step-progress">
+            <div class="step-dot completed">1</div>
+            <div class="step-line completed"></div>
+            <div class="step-dot current">2</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">3</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">4</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">5</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">6</div>
+        </div>
+
+        <div class="page-content" style="top:calc(var(--safe-top) + var(--nav-height) + 52px); padding-bottom:100px;">
+            <div class="scroll-content">
+
+                <!-- Step Labels -->
+                <div
+                    style="padding:8px 12px; display:flex; justify-content:space-between; font-size:8px; color:var(--text-secondary); text-align:center;">
+                    <span style="width:40px;">识别<br>训练</span>
+                    <span style="width:40px; font-weight:600; color:var(--accent);">决策<br>训练</span>
+                    <span style="width:40px;">列式<br>训练</span>
+                    <span style="width:40px;">陷阱<br>辨析</span>
+                    <span style="width:40px;">完整<br>求解</span>
+                    <span style="width:40px;">变式<br>训练</span>
+                </div>
+
+                <!-- Current Step: Step 2 - Decision Training -->
+                <div class="card" style="margin-top:4px;">
+                    <div
+                        style="font-size:var(--font-xs); color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
+                        Step 2 / 6 -- 决策训练</div>
+                    <div style="font-size:var(--font-lg); font-weight:700; margin-bottom:8px;">识别了板块运动, 接下来怎么分析?</div>
+                    <div style="font-size:var(--font-sm); color:var(--text-secondary); line-height:1.5;">
+                        你已经知道这是一道板块运动题。现在需要决定: 对这类题目, 分析时的关键步骤和顺序是什么?
+                    </div>
+                </div>
+
+                <!-- AI Chat -->
+                <div class="chat-container" style="padding-bottom:0;">
+                    <div class="chat-bubble ai">
+                        上一步你成功识别了板块运动模型。现在, 面对板块运动题, 你的第一步分析是什么?
+                    </div>
+                    <div class="chat-bubble user">
+                        先分析两个物体各自受力
+                    </div>
+                    <div class="chat-bubble ai">
+                        对! 分别对物块和木板进行受力分析。那么物块受几个力? 分别是什么?
+                    </div>
+                    <div class="chat-bubble user">
+                        物块受重力、支持力和摩擦力, 三个力
+                    </div>
+                    <div class="chat-bubble ai">
+                        正确。接下来关键的一步: 你怎么判断物块和木板之间的相对运动状态? 以及什么时候两者达到共速?
+                    </div>
+                </div>
+
+                <!-- Quick Reply Options -->
+                <div style="padding:8px 16px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-sm btn-outline" style="flex:none;">比较两个物体的加速度</button>
+                        <button class="btn btn-sm btn-outline" style="flex:none;">用相对速度判断</button>
+                        <button class="btn btn-sm btn-outline" style="flex:none;">不确定</button>
+                    </div>
+                </div>
+
+                <!-- Step 1 Result (collapsed) -->
+                <div class="card card-sm" style="background:var(--gray-50);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--accent);">Step 1 识别训练</span>
+                        <span class="tag tag-blue" style="font-size:9px;">已通过</span>
+                    </div>
+                    <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-top:4px;">
+                        耗时 1分30秒 -- 正确识别板块运动模型
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-bar no-tab">
+            <input class="chat-input" placeholder="输入你的分析思路...">
+            <button class="chat-send"></button>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

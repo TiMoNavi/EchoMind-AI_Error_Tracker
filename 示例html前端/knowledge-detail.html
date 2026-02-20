@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>知识点详情</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('global-knowledge.html')">返回</button>
+            <span class="nav-title">库仑定律公式</span>
+        </div>
+
+        <div class="page-content with-nav" style="padding-bottom:40px;">
+            <div class="scroll-content">
+
+                <!-- Mastery Dashboard -->
+                <div class="card" style="margin-top:8px; text-align:center;">
+                    <div style="font-size:var(--font-sm); color:var(--text-secondary);">当前掌握度</div>
+                    <div style="margin:12px 0;">
+                        <div
+                            style="display:inline-flex; align-items:center; justify-content:center; width:80px; height:80px; border-radius:50%; border:4px solid var(--level-3); position:relative;">
+                            <div>
+                                <div style="font-size:var(--font-2xl); font-weight:800; color:var(--level-3);">L3</div>
+                                <div style="font-size:var(--font-xs); color:var(--text-secondary);">使用出错</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:4px; margin-top:8px;">
+                        <span class="level-badge l0" style="width:32px; opacity:0.4;">L0</span>
+                        <span class="level-badge l1" style="width:32px; opacity:0.4;">L1</span>
+                        <span class="level-badge l2" style="width:32px; opacity:0.4;">L2</span>
+                        <span class="level-badge l3" style="width:32px;">L3</span>
+                        <span class="level-badge l4" style="width:32px; opacity:0.4;">L4</span>
+                        <span class="level-badge l5" style="width:32px; opacity:0.4;">L5</span>
+                    </div>
+                    <div style="font-size:var(--font-xs); color:var(--text-secondary); margin-top:8px;">
+                        曾到达: L4 (能正确使用)
+                    </div>
+                    <div style="display:flex; gap:6px; justify-content:center; margin-top:10px;">
+                        <span class="tag tag-dark">一级结论</span>
+                        <span class="tag tag-gray">需理解</span>
+                    </div>
+                </div>
+
+                <!-- Start Learning -->
+                <div style="padding:0 16px; margin-top:12px;">
+                    <button class="btn btn-primary" onclick="navigateTo('knowledge-learning.html')">开始学习</button>
+                </div>
+
+                <!-- Concept Test Records -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">概念检测记录</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item">
+                        <div class="list-body">
+                            <div class="list-label" style="font-size:var(--font-base);">检测 #3</div>
+                            <div class="list-desc">2月9日 -- 未通过 -- 条件判断错误</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--gray-700);">X</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-body">
+                            <div class="list-label" style="font-size:var(--font-base);">检测 #2</div>
+                            <div class="list-desc">2月5日 -- 通过 -- 全部正确</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--accent);">OK</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-body">
+                            <div class="list-label" style="font-size:var(--font-base);">检测 #1</div>
+                            <div class="list-desc">1月28日 -- 通过 -- 2/3正确</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--accent);">OK</span>
+                    </div>
+                </div>
+
+                <!-- Related Models -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">关联模型</span>
+                    <span style="font-size:var(--font-sm); color:var(--text-secondary);">使用此知识点的模型</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('model-detail.html')">
+                        <span class="level-dot l2" style="margin-right:10px;"></span>
+                        <div class="list-body">
+                            <div class="list-label">库仑力平衡</div>
+                            <div class="list-desc">L2 -- 列式卡住</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('model-detail.html')">
+                        <span class="level-dot l0" style="margin-right:10px;"></span>
+                        <div class="list-body">
+                            <div class="list-label">电场中的功能关系</div>
+                            <div class="list-desc">L0 -- 未接触</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                </div>
+
+                <div style="height:40px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

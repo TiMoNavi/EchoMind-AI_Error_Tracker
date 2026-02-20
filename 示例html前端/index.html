@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>主页</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+<div class="phone-frame" data-tabs="home">
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <span class="time">13:42</span>
+  <span class="icons">5G ||||</span>
+</div>
+
+<!-- Large Title -->
+<div style="background:var(--bg-primary);">
+  <div class="large-title">主页</div>
+</div>
+
+<!-- Scrollable Content -->
+<div class="page-content" style="top:110px;">
+<div class="scroll-content">
+
+  <!-- Today Stats -->
+  <div class="stat-row" style="margin-top:4px;">
+    <div class="stat-card">
+      <div class="stat-value">3</div>
+      <div class="stat-label">今日闭环</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">2h25m</div>
+      <div class="stat-label">学习时长</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">12</div>
+      <div class="stat-label">本周闭环</div>
+    </div>
+  </div>
+
+  <!-- Prediction Entry -->
+  <div class="card" style="margin-top:12px; cursor:pointer;" onclick="navigateTo('prediction-center.html')">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:var(--font-sm); color:var(--text-secondary); font-weight:500;">预测分数</div>
+        <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
+          <span class="score-big" style="font-size:40px;">63</span>
+          <span class="score-unit" style="font-size:var(--font-base);">/ 100</span>
+        </div>
+        <div style="font-size:var(--font-sm); color:var(--accent); margin-top:4px; font-weight:500;">
+          目标 70 分 -- 查看预测详情
+        </div>
+      </div>
+      <div style="width:100px; height:50px;">
+        <svg id="mini-trend" class="trend-svg" style="width:100%;height:100%;"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Start -->
+  <div style="padding:0 16px; margin-top:12px;">
+    <button class="btn btn-primary" onclick="navigateTo('model-training.html')" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+      <span>快速开始</span>
+      <span style="font-size:var(--font-sm); opacity:0.8;">-- 板块运动 (约5分钟)</span>
+    </button>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="section-header">
+    <span class="section-title">推荐学习</span>
+  </div>
+
+  <!-- Rec 1: Pending diagnosis -->
+  <div class="rec-card" onclick="navigateTo('ai-diagnosis.html')">
+    <div class="rec-icon dark">!</div>
+    <div class="rec-body">
+      <div class="rec-title">待诊断: 2025天津模拟 第5题</div>
+      <div class="rec-meta">
+        <span class="rec-tag">待诊断</span>
+        <span class="rec-tag">上传于今日</span>
+      </div>
+    </div>
+    <span class="card-arrow"></span>
+  </div>
+
+  <!-- Rec 2: Model training -->
+  <div class="rec-card" onclick="navigateTo('model-detail.html')">
+    <div class="rec-icon blue">L1</div>
+    <div class="rec-body">
+      <div class="rec-title">板块运动 -- 建模层训练</div>
+      <div class="rec-meta">
+        <span class="rec-tag">本周错2次</span>
+        <span class="rec-tag">约5分钟</span>
+      </div>
+    </div>
+    <span class="card-arrow"></span>
+  </div>
+
+  <!-- Rec 3: Knowledge gap -->
+  <div class="rec-card" onclick="navigateTo('knowledge-detail.html')">
+    <div class="rec-icon gray">KP</div>
+    <div class="rec-body">
+      <div class="rec-title">库仑定律适用条件 -- 知识补强</div>
+      <div class="rec-meta">
+        <span class="rec-tag">理解不深</span>
+        <span class="rec-tag">约3分钟</span>
+      </div>
+    </div>
+    <span class="card-arrow"></span>
+  </div>
+
+  <!-- Rec 4: Unstable model -->
+  <div class="rec-card" onclick="navigateTo('model-detail.html')">
+    <div class="rec-icon blue">~</div>
+    <div class="rec-body">
+      <div class="rec-title">牛顿第二定律应用 -- 不稳定</div>
+      <div class="rec-meta">
+        <span class="rec-tag">掌握不稳定</span>
+        <span class="rec-tag">14天未练习</span>
+      </div>
+    </div>
+    <span class="card-arrow"></span>
+  </div>
+
+  <!-- Upload History Entry -->
+  <div class="card" style="cursor:pointer; margin-top:4px;" onclick="navigateTo('upload-history.html')">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div class="card-title">最近上传</div>
+        <div class="card-subtitle">3道错题未诊断</div>
+      </div>
+      <span class="card-arrow"></span>
+    </div>
+  </div>
+
+  <div style="height:20px;"></div>
+
+</div>
+</div>
+
+<!-- FAB (+) Button -->
+<button class="fab" onclick="showModal('upload-modal')">+</button>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="upload-modal" onclick="hideModal('upload-modal')">
+  <div class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:var(--font-lg); font-weight:600; margin-bottom:16px;">新建</div>
+
+    <div class="list-group" style="margin:0; box-shadow:none; border:1px solid var(--border-color);">
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--gray-900); color:#fff;">HW</div>
+        <div class="list-body">
+          <div class="list-label">上传作业</div>
+          <div class="list-desc">拍照上传今日作业, 标记对错</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--gray-600); color:#fff;">QK</div>
+        <div class="list-body">
+          <div class="list-label">极简上传</div>
+          <div class="list-desc">快速记录最近做过的练习</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+      <div class="list-item" onclick="navigateTo('upload-menu.html')">
+        <div class="list-icon" style="background:var(--accent); color:#fff;">EX</div>
+        <div class="list-body">
+          <div class="list-label">上传考试卷子</div>
+          <div class="list-desc">模考/真题卷, 按题号归档</div>
+        </div>
+        <span class="list-chevron"></span>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" style="margin-top:16px;" onclick="hideModal('upload-modal')">取消</button>
+  </div>
+</div>
+
+<!-- Tab Bar (injected by JS) -->
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Inject tab bar
+  document.querySelector('.phone-frame').insertAdjacentHTML('beforeend', getTabBar('home'));
+  // Mini trend
+  setTimeout(() => drawTrendLine('mini-trend', [55,57,59,61,60,63], '#007AFF'), 200);
+</script>
+</body>
+</html>

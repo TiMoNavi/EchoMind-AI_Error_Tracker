@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>知识点学习</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('knowledge-detail.html')">返回</button>
+            <span class="nav-title">知识点学习</span>
+        </div>
+
+        <!-- Step Progress Bar -->
+        <div class="step-progress">
+            <div class="step-dot completed">1</div>
+            <div class="step-line completed"></div>
+            <div class="step-dot completed">2</div>
+            <div class="step-line completed"></div>
+            <div class="step-dot current">3</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">4</div>
+            <div class="step-line"></div>
+            <div class="step-dot pending">5</div>
+        </div>
+
+        <div class="page-content" style="top:calc(var(--safe-top) + var(--nav-height) + 52px); padding-bottom:100px;">
+            <div class="scroll-content">
+
+                <!-- Step Labels -->
+                <div
+                    style="padding:8px 20px; display:flex; justify-content:space-between; font-size:9px; color:var(--text-secondary);">
+                    <span style="width:50px; text-align:center;">概念呈现</span>
+                    <span style="width:50px; text-align:center;">理解检查</span>
+                    <span style="width:50px; text-align:center; font-weight:600; color:var(--accent);">辨析训练</span>
+                    <span style="width:50px; text-align:center;">实际应用</span>
+                    <span style="width:50px; text-align:center;">概念检测</span>
+                </div>
+
+                <!-- Current Step: Step 3 - Discrimination -->
+                <div class="card" style="margin-top:8px;">
+                    <div
+                        style="font-size:var(--font-xs); color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
+                        Step 3 / 5 -- 辨析训练</div>
+                    <div style="font-size:var(--font-lg); font-weight:700; margin-bottom:4px;">库仑定律 vs 万有引力定律</div>
+                    <div style="font-size:var(--font-sm); color:var(--text-secondary);">两个公式形式相似, 但适用条件和物理意义完全不同</div>
+                </div>
+
+                <!-- AI Chat for this step -->
+                <div class="chat-container" style="padding-bottom:0;">
+                    <div class="chat-bubble ai">
+                        库仑定律和万有引力定律都是平方反比定律。我来考考你, 这两个公式有什么关键区别?
+                    </div>
+                    <div class="chat-bubble user">
+                        库仑定律是关于电荷之间的, 万有引力是关于质量之间的
+                    </div>
+                    <div class="chat-bubble ai">
+                        对, 这是最基本的区别。现在更关键的一个区别: 库仑定律的适用条件是什么? 它能用于任何带电体之间吗?
+                    </div>
+                    <div class="chat-bubble user">
+                        需要是点电荷, 或者可以看成点电荷的
+                    </div>
+                    <div class="chat-bubble ai">
+                        很好! 准确地说, 库仑定律只适用于真空中两个静止点电荷之间的力。那么如果一个带电球壳内部有一个点电荷, 能直接用库仑定律吗?
+                    </div>
+                </div>
+
+                <!-- Quick Reply Options -->
+                <div style="padding:8px 16px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-sm btn-outline" style="flex:none;">能, 球壳可以看成点电荷</button>
+                        <button class="btn btn-sm btn-outline" style="flex:none;">不能, 这不满足适用条件</button>
+                        <button class="btn btn-sm btn-outline" style="flex:none;">不确定, 再解释一下</button>
+                    </div>
+                </div>
+
+                <!-- Comparison Table (mini version) -->
+                <div class="card" style="margin-top:8px;">
+                    <div style="font-size:var(--font-sm); font-weight:600; margin-bottom:8px;">对比表</div>
+                    <table class="strategy-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>库仑定律</th>
+                                <th>万有引力</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight:500;">作用对象</td>
+                                <td>带电体</td>
+                                <td>有质量的物体</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:500;">方向</td>
+                                <td>吸引或排斥</td>
+                                <td>只有吸引</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:500;">适用条件</td>
+                                <td style="font-weight:600; color:var(--accent);">真空+点电荷</td>
+                                <td>任意两物体</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-bar no-tab">
+            <input class="chat-input" placeholder="输入你的想法...">
+            <button class="chat-send"></button>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

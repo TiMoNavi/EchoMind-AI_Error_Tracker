@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>模型详情</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('global-model.html')">返回</button>
+            <span class="nav-title">板块运动</span>
+        </div>
+
+        <div class="page-content with-nav" style="padding-bottom:40px;">
+            <div class="scroll-content">
+
+                <!-- Mastery Funnel -->
+                <div class="card" style="margin-top:8px;">
+                    <div style="text-align:center; margin-bottom:16px;">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary);">当前掌握度</div>
+                        <div style="font-size:var(--font-3xl); font-weight:800; color:var(--level-1); margin-top:4px;">
+                            L1</div>
+                        <div style="font-size:var(--font-base); color:var(--text-secondary);">建模卡住</div>
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-top:2px;">看到题不确定该用什么方法
+                        </div>
+                    </div>
+
+                    <!-- 4-Layer Funnel -->
+                    <div class="funnel">
+                        <div class="funnel-layer">
+                            <div class="funnel-bar stuck" style="flex:1;">建模层 -- 卡住</div>
+                            <span class="funnel-label">L1</span>
+                        </div>
+                        <div class="funnel-layer">
+                            <div class="funnel-bar not-reached" style="flex:0.85;">列式层 -- 未到达</div>
+                            <span class="funnel-label">L2</span>
+                        </div>
+                        <div class="funnel-layer">
+                            <div class="funnel-bar not-reached" style="flex:0.7;">执行层 -- 未到达</div>
+                            <span class="funnel-label">L3</span>
+                        </div>
+                        <div class="funnel-layer">
+                            <div class="funnel-bar not-reached" style="flex:0.55;">稳定层 -- 未到达</div>
+                            <span class="funnel-label">L4-5</span>
+                        </div>
+                    </div>
+
+                    <div
+                        style="text-align:center; margin-top:12px; padding:8px; background:var(--gray-50); border-radius:var(--radius-md);">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary);">解决后预计</div>
+                        <div style="font-size:var(--font-lg); font-weight:700; color:var(--accent);">+5 分</div>
+                        <div style="font-size:var(--font-xs); color:var(--text-secondary);">关联大题第1题 (12分)</div>
+                    </div>
+                </div>
+
+                <!-- Start Training -->
+                <div style="padding:0 16px; margin-top:12px;">
+                    <button class="btn btn-primary" onclick="navigateTo('model-training.html')">开始训练 -- 从 Step 1
+                        开始</button>
+                </div>
+
+                <!-- Prerequisite Knowledge -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">前置知识点</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('knowledge-detail.html')">
+                        <span class="level-dot l3" style="margin-right:10px;"></span>
+                        <div class="list-body">
+                            <div class="list-label">牛顿第二定律</div>
+                            <div class="list-desc">L3 -- 使用出错</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('knowledge-detail.html')">
+                        <span class="level-dot l2" style="margin-right:10px;"></span>
+                        <div class="list-body">
+                            <div class="list-label">摩擦力分析</div>
+                            <div class="list-desc">L2 -- 理解不深</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                </div>
+
+                <div style="padding:0 16px;">
+                    <div
+                        style="background:var(--blue-50); border-radius:var(--radius-md); padding:10px 14px; font-size:var(--font-sm); color:var(--blue-700);">
+                        建议先学习 "摩擦力分析" (当前L2), 掌握后训练效果更好
+                    </div>
+                </div>
+
+                <!-- Related Questions -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">相关题目</span>
+                    <span style="font-size:var(--font-sm); color:var(--text-secondary);">5题</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div class="list-body">
+                            <div class="list-label">2025天津模拟 第5题</div>
+                            <div class="list-desc">2月8日 -- 错误 -- 待诊断</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--gray-700);">X</span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div class="list-body">
+                            <div class="list-label">2024天津真题 大题1</div>
+                            <div class="list-desc">2月3日 -- 错误 -- 已诊断: 识别错</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--gray-700);">X</span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div class="list-body">
+                            <div class="list-label">2024天津真题 第4题</div>
+                            <div class="list-desc">2月3日 -- 正确</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); font-weight:600; color:var(--accent);">OK</span>
+                    </div>
+                </div>
+
+                <!-- Training History -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">训练记录</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item">
+                        <div class="list-body">
+                            <div class="list-label">Step 1 训练</div>
+                            <div class="list-desc">2月5日 -- 未通过 -- 识别失败</div>
+                        </div>
+                        <span style="font-size:var(--font-sm); color:var(--gray-700);">X</span>
+                    </div>
+                </div>
+
+                <div style="height:40px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

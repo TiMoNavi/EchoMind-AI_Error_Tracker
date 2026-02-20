@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>题目详情</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('question-aggregate.html')">返回</button>
+            <span class="nav-title">题目详情</span>
+        </div>
+
+        <div class="page-content with-nav" style="padding-bottom:40px;">
+            <div class="scroll-content">
+
+                <!-- Question Image Area -->
+                <div class="card" style="margin-top:8px;">
+                    <div
+                        style="background:var(--gray-100); border-radius:var(--radius-md); padding:20px; min-height:180px;">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-bottom:10px;">
+                            2025天津模拟(一) 第5题</div>
+                        <div style="font-size:var(--font-base); line-height:1.7; color:var(--text-primary);">
+                            如图所示, 质量为M的长木板置于光滑水平面上, 质量为m的物块(可视为质点)以速度v0从左端滑上木板。物块与木板间的动摩擦因数为mu, 木板足够长。求:
+                            <br>(1) 物块和木板最终速度;
+                            <br>(2) 物块在木板上滑行的距离。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="card card-sm">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div
+                            style="width:40px; height:40px; border-radius:50%; background:var(--gray-800); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:var(--font-sm);">
+                            X</div>
+                        <div style="flex:1;">
+                            <div style="font-size:var(--font-md); font-weight:600;">错误</div>
+                            <div style="font-size:var(--font-sm); color:var(--text-secondary);">2月8日上传</div>
+                        </div>
+                        <span class="tag tag-dark">待诊断</span>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="card card-sm">
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-bottom:6px;">归属模型
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <span class="tag tag-blue" onclick="navigateTo('model-detail.html')"
+                                style="cursor:pointer;">板块运动</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-bottom:6px;">关联知识点
+                        </div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <span class="tag tag-gray" onclick="navigateTo('knowledge-detail.html')"
+                                style="cursor:pointer;">牛顿第二定律</span>
+                            <span class="tag tag-gray" onclick="navigateTo('knowledge-detail.html')"
+                                style="cursor:pointer;">摩擦力</span>
+                            <span class="tag tag-gray" onclick="navigateTo('knowledge-detail.html')"
+                                style="cursor:pointer;">动量守恒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnosis Entry -->
+                <div style="padding:0 16px; margin-top:12px;">
+                    <button class="btn btn-primary" onclick="navigateTo('ai-diagnosis.html')">进入诊断</button>
+                    <div
+                        style="text-align:center; font-size:var(--font-sm); color:var(--text-secondary); margin-top:8px;">
+                        AI将通过对话定位你的错误在哪一层
+                    </div>
+                </div>
+
+                <!-- Source info -->
+                <div class="card" style="margin-top:16px;">
+                    <div style="font-size:var(--font-sm); color:var(--text-secondary);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>来源卷子</span>
+                            <span style="color:var(--text-primary);">2025天津模拟(一)</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>题号</span>
+                            <span style="color:var(--text-primary);">选择题 第5题</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>满分</span>
+                            <span style="color:var(--text-primary);">3 分</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>态度</span>
+                            <span class="attitude-must">MUST</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height:40px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

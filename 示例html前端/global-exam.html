@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>全局 - 高考卷子</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div style="background:var(--bg-primary);">
+            <div class="large-title">全局</div>
+        </div>
+
+        <div style="background:var(--bg-primary); padding-bottom:4px;">
+            <div class="sub-tabs">
+                <button class="sub-tab" onclick="navigateTo('global-knowledge.html')">知识点</button>
+                <button class="sub-tab" onclick="navigateTo('global-model.html')">模型/方法</button>
+                <button class="sub-tab active">高考卷子</button>
+            </div>
+        </div>
+
+        <div class="page-content" style="top:156px; padding-bottom:100px;">
+            <div class="scroll-content">
+
+                <!-- Exam Paper Heatmap -->
+                <div class="section-header" style="padding-top:8px;">
+                    <span class="section-title" style="font-size:var(--font-md);">卷面热力图</span>
+                    <span style="font-size:var(--font-sm); color:var(--text-secondary);">目标 70 分</span>
+                </div>
+
+                <div class="card" style="padding:12px;">
+                    <!-- Legend -->
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; font-size:10px;">
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--blue-600);"></span>稳了</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--blue-200);"></span>不错</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-800);"></span>需练</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-500);"></span>提升</span>
+                        <span style="display:flex; align-items:center; gap:3px;"><span
+                                style="width:10px;height:10px;border-radius:2px;background:var(--gray-150);"></span>可放弃</span>
+                    </div>
+
+                    <div class="heatmap">
+                        <!-- 选择题 1-8 -->
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">1</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">2</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-stable" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">3</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">4</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-danger" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">5</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">6</span><span class="q-score">3分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">7</span><span class="q-score">6分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">8</span><span class="q-score">6分</span></div>
+                        <!-- 实验题 -->
+                        <div class="heatmap-cell hm-good" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">9</span><span class="q-score">8分</span></div>
+                        <div class="heatmap-cell hm-warn" onclick="navigateTo('question-aggregate.html')"><span
+                                class="q-num">10</span><span class="q-score">7分</span></div>
+                        <!-- 计算题 -->
+                        <div class="heatmap-cell hm-danger" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题1</span><span
+                                class="q-score">12分</span></div>
+                        <div class="heatmap-cell hm-warn" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题2</span><span
+                                class="q-score">14分</span></div>
+                        <div class="heatmap-cell hm-skip" style="grid-column:span 2; aspect-ratio:2/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">大题3</span><span
+                                class="q-score">18分</span></div>
+                        <!-- 选做 -->
+                        <div class="heatmap-cell hm-good" style="grid-column:span 3; aspect-ratio:3/1;"
+                            onclick="navigateTo('question-aggregate.html')"><span class="q-num">选做题</span><span
+                                class="q-score">15分</span></div>
+                    </div>
+                </div>
+
+                <!-- Question List by Type -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">按题型浏览</span>
+                    <button class="btn-text" onclick="navigateTo('upload-menu.html')">上传卷子</button>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('question-aggregate.html')">
+                        <div class="list-icon" style="background:var(--gray-900); color:#fff; font-size:11px;">1-8</div>
+                        <div class="list-body">
+                            <div class="list-label">选择题 (1-8)</div>
+                            <div class="list-desc">正确率 82% -- 做过 24 题</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--gray-600); color:#fff; font-size:11px;">9-10
+                        </div>
+                        <div class="list-body">
+                            <div class="list-label">实验题</div>
+                            <div class="list-desc">正确率 68% -- 做过 8 题</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-icon" style="background:var(--accent); color:#fff; font-size:10px;">计算</div>
+                        <div class="list-body">
+                            <div class="list-label">计算题 (大题1-3)</div>
+                            <div class="list-desc">正确率 45% -- 做过 12 题</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-icon"
+                            style="background:var(--blue-200); color:var(--blue-800); font-size:11px;">选做</div>
+                        <div class="list-body">
+                            <div class="list-label">选做题</div>
+                            <div class="list-desc">正确率 75% -- 做过 6 题</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                </div>
+
+                <!-- Recent Exams -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">最近卷子</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('upload-history.html')">
+                        <div class="list-body">
+                            <div class="list-label">2025天津模拟卷(一)</div>
+                            <div class="list-desc">2月8日上传 -- 68/100 -- 3道待诊断</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-body">
+                            <div class="list-label">2024天津高考真题</div>
+                            <div class="list-desc">2月3日上传 -- 55/100 -- 已完成诊断</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                </div>
+
+                <div style="height:20px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.querySelector('.phone-frame').insertAdjacentHTML('beforeend', getTabBar('global'));
+    </script>
+</body>
+
+</html>

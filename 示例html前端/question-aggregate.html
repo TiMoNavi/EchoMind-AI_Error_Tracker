@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>题号聚合</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('global-exam.html')">返回</button>
+            <span class="nav-title">选择题 第5题</span>
+        </div>
+
+        <div class="page-content with-nav" style="padding-bottom:40px;">
+            <div class="scroll-content">
+
+                <!-- Stats Overview -->
+                <div class="card" style="margin-top:8px;">
+                    <div style="display:flex; justify-content:space-around; text-align:center;">
+                        <div>
+                            <div style="font-size:var(--font-2xl); font-weight:800;">6</div>
+                            <div style="font-size:var(--font-xs); color:var(--text-secondary);">累计做题</div>
+                        </div>
+                        <div>
+                            <div style="font-size:var(--font-2xl); font-weight:800;">33%</div>
+                            <div style="font-size:var(--font-xs); color:var(--text-secondary);">正确率</div>
+                        </div>
+                        <div>
+                            <div style="font-size:var(--font-2xl); font-weight:800; color:var(--accent);">2/3</div>
+                            <div style="font-size:var(--font-xs); color:var(--text-secondary);">预测得分</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attitude & Tags -->
+                <div class="card card-sm">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <span class="attitude-must">MUST -- 必须拿满</span>
+                        <span class="tag tag-gray">满分 3分</span>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-bottom:6px;">高频考点
+                        </div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <span class="tag tag-blue">牛顿第二定律</span>
+                            <span class="tag tag-blue">板块运动</span>
+                            <span class="tag tag-blue">摩擦力</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <div style="font-size:var(--font-sm); color:var(--text-secondary); margin-bottom:6px;">薄弱模型
+                        </div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <span class="tag tag-dark">板块运动 L1</span>
+                            <span class="tag tag-outline">牛顿第二定律应用 L3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question List -->
+                <div class="section-header">
+                    <span class="section-title" style="font-size:var(--font-md);">做过的题目</span>
+                    <span style="font-size:var(--font-sm); color:var(--text-secondary);">6题</span>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--gray-700);">
+                            X</div>
+                        <div class="list-body">
+                            <div class="list-label">2025天津模拟(一) 第5题</div>
+                            <div class="list-desc">2月8日 -- 待诊断</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--gray-700);">
+                            X</div>
+                        <div class="list-body">
+                            <div class="list-label">2024天津模拟(三) 第5题</div>
+                            <div class="list-desc">2月4日 -- 已诊断: 建模层出错</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--accent);">
+                            OK</div>
+                        <div class="list-body">
+                            <div class="list-label">2024天津真题 第5题</div>
+                            <div class="list-desc">2月3日</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--gray-700);">
+                            X</div>
+                        <div class="list-body">
+                            <div class="list-label">2024天津模拟(一) 第5题</div>
+                            <div class="list-desc">1月28日 -- 已诊断: 执行层出错</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--gray-700);">
+                            X</div>
+                        <div class="list-body">
+                            <div class="list-label">2023天津真题 第5题</div>
+                            <div class="list-desc">1月25日 -- 已诊断: 建模层出错</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                    <div class="list-item" onclick="navigateTo('question-detail.html')">
+                        <div
+                            style="width:24px; text-align:center; margin-right:10px; font-weight:700; color:var(--accent);">
+                            OK</div>
+                        <div class="list-body">
+                            <div class="list-label">2023天津模拟(二) 第5题</div>
+                            <div class="list-desc">1月20日</div>
+                        </div>
+                        <span class="list-chevron"></span>
+                    </div>
+                </div>
+
+                <div style="height:40px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

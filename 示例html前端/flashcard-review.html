@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>闪卡复习</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+    <div class="phone-frame">
+
+        <div class="status-bar">
+            <span class="time">13:42</span>
+            <span class="icons">5G ||||</span>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-back" onclick="navigateTo('memory.html')">返回</button>
+            <span class="nav-title">闪卡复习</span>
+            <span class="nav-right" style="font-size:var(--font-sm); color:var(--text-secondary);">3/12</span>
+        </div>
+
+        <!-- Progress -->
+        <div style="padding:0 16px; background:var(--bg-primary);">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:25%;"></div>
+            </div>
+        </div>
+
+        <div class="page-content"
+            style="top:calc(var(--safe-top) + var(--nav-height) + 8px); padding-bottom:40px; display:flex; flex-direction:column; justify-content:center;">
+
+            <!-- Flashcard -->
+            <div class="flashcard" id="flashcard"
+                onclick="document.getElementById('card-front').style.display = document.getElementById('card-front').style.display === 'none' ? 'block' : 'none'; document.getElementById('card-back').style.display = document.getElementById('card-back').style.display === 'none' ? 'block' : 'none'; document.getElementById('fc-actions').style.display = 'flex';">
+                <span class="card-type">识别卡</span>
+                <div id="card-front" class="card-face">
+                    <div style="font-size:var(--font-base); color:var(--text-secondary); margin-bottom:12px;">题目关键词
+                    </div>
+                    <div style="font-size:var(--font-xl); font-weight:600; line-height:1.6;">
+                        "一个物块以初速度v0滑上长木板, 木板在光滑水平面上..."
+                    </div>
+                    <div style="margin-top:20px; font-size:var(--font-sm); color:var(--gray-400);">点击翻转</div>
+                </div>
+                <div id="card-back" class="card-face" style="display:none;">
+                    <div style="font-size:var(--font-base); color:var(--text-secondary); margin-bottom:12px;">对应模型</div>
+                    <div style="font-size:var(--font-2xl); font-weight:700; color:var(--accent); line-height:1.4;">
+                        板块运动
+                    </div>
+                    <div
+                        style="margin-top:16px; font-size:var(--font-base); color:var(--text-primary); line-height:1.6;">
+                        关键特征: 两个物体通过摩擦力相互作用, 在光滑水平面上运动, 最终达到共速。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flashcard-actions" id="fc-actions" style="display:none;">
+                <button class="fc-btn forgot">忘了</button>
+                <button class="fc-btn remember">记得</button>
+                <button class="fc-btn easy">简单</button>
+            </div>
+
+            <!-- Tap hint -->
+            <div style="text-align:center; margin-top:16px; font-size:var(--font-sm); color:var(--gray-400);"
+                id="tap-hint">
+                点击卡片翻转查看答案
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
