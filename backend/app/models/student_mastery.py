@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import String, SmallInteger, Integer, Boolean, DateTime, ForeignKey, UniqueConstraint, Index, func
+from sqlalchemy import String, SmallInteger, Integer, Float, Boolean, DateTime, ForeignKey, UniqueConstraint, Index, func, text
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -25,6 +25,7 @@ class StudentMastery(Base):
     recent_results: Mapped[list[bool] | None] = mapped_column(ARRAY(Boolean), default=[])
     last_error_subtype: Mapped[str | None] = mapped_column(String(30))
     is_unstable: Mapped[bool] = mapped_column(Boolean, default=False)
+    mastery_value: Mapped[float] = mapped_column(Float, default=0, server_default=text('0'))
     next_retest_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

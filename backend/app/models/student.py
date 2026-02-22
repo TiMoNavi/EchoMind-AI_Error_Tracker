@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import String, Integer, Float, DateTime, func
+from sqlalchemy import String, Integer, Float, DateTime, func, text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -27,10 +27,10 @@ class Student(Base):
     exam_strategy: Mapped[dict | None] = mapped_column(JSONB)
 
     # 三维画像
-    formula_memory_rate: Mapped[float] = mapped_column(Float, default=0)
-    model_identify_rate: Mapped[float] = mapped_column(Float, default=0)
-    calculation_accuracy: Mapped[float] = mapped_column(Float, default=0)
-    reading_accuracy: Mapped[float] = mapped_column(Float, default=0)
+    formula_memory_rate: Mapped[float] = mapped_column(Float, default=0, server_default=text('0'))
+    model_identify_rate: Mapped[float] = mapped_column(Float, default=0, server_default=text('0'))
+    calculation_accuracy: Mapped[float] = mapped_column(Float, default=0, server_default=text('0'))
+    reading_accuracy: Mapped[float] = mapped_column(Float, default=0, server_default=text('0'))
 
     # 闭环统计
     total_closures_today: Mapped[int] = mapped_column(Integer, default=0)
