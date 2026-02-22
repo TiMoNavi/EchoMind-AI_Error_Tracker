@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/providers/dashboard_provider.dart';
 
-class LearningStatsWidget extends StatelessWidget {
+class LearningStatsWidget extends ConsumerWidget {
   const LearningStatsWidget({super.key});
 
-  static const _stats = [
-    ('28', '累计天数'),
-    ('142', '总闭环数'),
-    ('48h', '总学习时长'),
-    ('+8', '预测提升'),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dashboard = ref.watch(dashboardProvider);
+
+    return dashboard.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => _buildStats([('0', '总题数'), ('0', '错题数'), ('0', '已掌握'), ('0', '薄弱点')]),
+      data: (d) => _buildStats([
+        ('${d.totalQuestions}', '总题数'),
+        ('${d.errorCount}', '错题数'),
+        ('${d.masteryCount}', '已掌握'),
+        ('${d.weakCount}', '薄弱点'),
+      ]),
+    );
+  }
+
+  Widget _buildStats(List<(String, String)> stats) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
@@ -26,14 +36,12 @@ class LearningStatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                for (final s in _stats)
-                  Column(
-                    children: [
-                      Text(s.$1, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 2),
-                      Text(s.$2, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
-                    ],
-                  ),
+                for (final s in stats)
+                  Column(children: [
+                    Text(s.$1, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(s.$2, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                  ]),
               ],
             ),
           ],

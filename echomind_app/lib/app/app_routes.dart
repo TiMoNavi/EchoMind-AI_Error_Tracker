@@ -11,9 +11,9 @@ class AppRoutes {
   static const String globalExam = '/global-exam';
   static const String aiDiagnosis = '/ai-diagnosis';
   static const String flashcardReview = '/flashcard-review';
-  static const String knowledgeDetail = '/knowledge-detail';
+  static const String knowledgeDetail = '/knowledge-detail/:id';
   static const String knowledgeLearning = '/knowledge-learning';
-  static const String modelDetail = '/model-detail';
+  static const String modelDetail = '/model-detail/:id';
   static const String modelTraining = '/model-training';
   static const String predictionCenter = '/prediction-center';
   static const String questionAggregate = '/question-aggregate';

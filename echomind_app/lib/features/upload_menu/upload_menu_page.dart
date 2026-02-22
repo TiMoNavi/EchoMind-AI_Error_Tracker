@@ -39,7 +39,7 @@ class _UploadMenuPageState extends ConsumerState<UploadMenuPage> {
         'image': await MultipartFile.fromFile(_selectedImage!.path),
         'source': _source,
       });
-      await ApiClient().dio.post('/questions/upload', data: formData);
+      await ApiClient().dio.post('/upload/image', data: formData);
       if (mounted) context.go(AppRoutes.uploadHistory);
     } catch (e) {
       setState(() => _error = '上传失败: $e');
