@@ -37,3 +37,10 @@ class QuestionDetailResponse(BaseModel):
 class HistoryDateGroup(BaseModel):
     date: str
     questions: list[QuestionResponse]
+
+
+class AggregateItem(BaseModel):
+    target_id: str
+    target_name: str
+    total: int
+    error_count: int
