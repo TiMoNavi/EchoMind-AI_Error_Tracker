@@ -26,3 +26,6 @@ class KnowledgePointDetail(KnowledgePointItem):
     section: str
     related_model_ids: list[str] | None = None
     mastery_level: int | None = None
+    mastery_value: float | None = None
+    error_count: int = 0
+    correct_count: int = 0

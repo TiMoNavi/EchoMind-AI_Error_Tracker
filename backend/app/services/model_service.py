@@ -33,18 +33,21 @@ async def get_model_detail(db: AsyncSession, model_id: str, student_id: uuid.UUI
         return None
 
     mastery_result = await db.execute(
-        select(StudentMastery.current_level).where(
+        select(StudentMastery).where(
             StudentMastery.student_id == student_id,
             StudentMastery.target_type == "model",
             StudentMastery.target_id == model_id,
         )
     )
-    level = mastery_result.scalar_one_or_none()
+    ms = mastery_result.scalar_one_or_none()
 
     return ModelDetail(
         id=m.id, name=m.name, description=m.description,
         chapter=m.chapter, section=m.section,
         prerequisite_kp_ids=m.prerequisite_kp_ids,
         confusion_group_ids=m.confusion_group_ids,
-        mastery_level=level,
+        mastery_level=ms.current_level if ms else None,
+        mastery_value=getattr(ms, "mastery_value", None) if ms else None,
+        error_count=ms.error_count if ms else 0,
+        correct_count=ms.correct_count if ms else 0,
     )

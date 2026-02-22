@@ -33,16 +33,20 @@ async def get_knowledge_detail(db: AsyncSession, kp_id: str, student_id: uuid.UU
         return None
 
     mastery_result = await db.execute(
-        select(StudentMastery.current_level).where(
+        select(StudentMastery).where(
             StudentMastery.student_id == student_id,
             StudentMastery.target_type == "kp",
             StudentMastery.target_id == kp_id,
         )
     )
-    level = mastery_result.scalar_one_or_none()
+    m = mastery_result.scalar_one_or_none()
 
     return KnowledgePointDetail(
         id=kp.id, name=kp.name, conclusion_level=kp.conclusion_level,
         description=kp.description, chapter=kp.chapter, section=kp.section,
-        related_model_ids=kp.related_model_ids, mastery_level=level,
+        related_model_ids=kp.related_model_ids,
+        mastery_level=m.current_level if m else None,
+        mastery_value=getattr(m, "mastery_value", None) if m else None,
+        error_count=m.error_count if m else 0,
+        correct_count=m.correct_count if m else 0,
     )
