@@ -21,6 +21,12 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: "UserResponse"
+
+
 class UserResponse(BaseModel):
     id: str
     phone: str

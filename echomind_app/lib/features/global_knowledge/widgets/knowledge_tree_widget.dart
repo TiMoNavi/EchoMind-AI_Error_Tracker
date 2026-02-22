@@ -79,6 +79,10 @@ class _KnowledgeTreeWidgetState extends ConsumerState<KnowledgeTreeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Prefetch API data; will be used when backend format is finalized
+    // ignore: unused_local_variable
+    final apiTree = ref.watch(knowledgeTreeProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -90,7 +94,7 @@ class _KnowledgeTreeWidgetState extends ConsumerState<KnowledgeTreeWidget> {
             _FilterChip(label: '数学', active: _subject == 1, onTap: () => setState(() => _subject = 1)),
           ]),
           const SizedBox(height: 12),
-          // Tree
+          // Tree (mock fallback until API format is finalized)
           for (var ci = 0; ci < _tree.length; ci++) _buildChapter(ci),
         ],
       ),

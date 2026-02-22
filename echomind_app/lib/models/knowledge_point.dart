@@ -3,23 +3,42 @@ import 'package:json_annotation/json_annotation.dart';
 part 'knowledge_point.g.dart';
 
 @JsonSerializable()
-class KnowledgePoint {
-  final int id;
+class KnowledgePointItem {
+  final String id;
   final String name;
-  final int? level;
-  @JsonKey(name: 'parent_id')
-  final int? parentId;
-  final List<KnowledgePoint>? children;
+  @JsonKey(name: 'conclusion_level')
+  final int conclusionLevel;
+  final String? description;
 
-  const KnowledgePoint({
+  const KnowledgePointItem({
     required this.id,
     required this.name,
-    this.level,
-    this.parentId,
-    this.children,
+    required this.conclusionLevel,
+    this.description,
   });
 
-  factory KnowledgePoint.fromJson(Map<String, dynamic> json) =>
-      _$KnowledgePointFromJson(json);
-  Map<String, dynamic> toJson() => _$KnowledgePointToJson(this);
+  factory KnowledgePointItem.fromJson(Map<String, dynamic> json) =>
+      _$KnowledgePointItemFromJson(json);
+}
+
+@JsonSerializable()
+class SectionNode {
+  final String section;
+  final List<KnowledgePointItem> items;
+
+  const SectionNode({required this.section, required this.items});
+
+  factory SectionNode.fromJson(Map<String, dynamic> json) =>
+      _$SectionNodeFromJson(json);
+}
+
+@JsonSerializable()
+class ChapterNode {
+  final String chapter;
+  final List<SectionNode> sections;
+
+  const ChapterNode({required this.chapter, required this.sections});
+
+  factory ChapterNode.fromJson(Map<String, dynamic> json) =>
+      _$ChapterNodeFromJson(json);
 }

@@ -4,22 +4,34 @@ part 'model_item.g.dart';
 
 @JsonSerializable()
 class ModelItem {
-  final int id;
+  final String id;
   final String name;
-  final int? level;
-  @JsonKey(name: 'category_name')
-  final String? categoryName;
-  final List<ModelItem>? children;
+  final String? description;
 
-  const ModelItem({
-    required this.id,
-    required this.name,
-    this.level,
-    this.categoryName,
-    this.children,
-  });
+  const ModelItem({required this.id, required this.name, this.description});
 
   factory ModelItem.fromJson(Map<String, dynamic> json) =>
       _$ModelItemFromJson(json);
-  Map<String, dynamic> toJson() => _$ModelItemToJson(this);
+}
+
+@JsonSerializable()
+class ModelSectionNode {
+  final String section;
+  final List<ModelItem> items;
+
+  const ModelSectionNode({required this.section, required this.items});
+
+  factory ModelSectionNode.fromJson(Map<String, dynamic> json) =>
+      _$ModelSectionNodeFromJson(json);
+}
+
+@JsonSerializable()
+class ModelChapterNode {
+  final String chapter;
+  final List<ModelSectionNode> sections;
+
+  const ModelChapterNode({required this.chapter, required this.sections});
+
+  factory ModelChapterNode.fromJson(Map<String, dynamic> json) =>
+      _$ModelChapterNodeFromJson(json);
 }

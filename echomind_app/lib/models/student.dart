@@ -4,22 +4,25 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student {
-  final int id;
-  final String username;
-  final String? email;
-  final String? region;
+  final String id;
+  final String phone;
+  final String? nickname;
+  @JsonKey(name: 'region_id')
+  final String regionId;
+  final String subject;
   @JsonKey(name: 'target_score')
-  final int? targetScore;
-  @JsonKey(name: 'created_at')
-  final String? createdAt;
+  final int targetScore;
+  @JsonKey(name: 'predicted_score')
+  final double? predictedScore;
 
   const Student({
     required this.id,
-    required this.username,
-    this.email,
-    this.region,
-    this.targetScore,
-    this.createdAt,
+    required this.phone,
+    this.nickname,
+    required this.regionId,
+    required this.subject,
+    required this.targetScore,
+    this.predictedScore,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);

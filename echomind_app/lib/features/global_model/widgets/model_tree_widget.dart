@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
+import 'package:echomind_app/providers/model_tree_provider.dart';
 
 Color _levelColor(int level) => switch (level) {
   0 => const Color(0xFFFF3B30),
@@ -12,14 +14,14 @@ Color _levelColor(int level) => switch (level) {
   _ => const Color(0xFF00875A),
 };
 
-class ModelTreeWidget extends StatefulWidget {
+class ModelTreeWidget extends ConsumerStatefulWidget {
   const ModelTreeWidget({super.key});
 
   @override
-  State<ModelTreeWidget> createState() => _ModelTreeWidgetState();
+  ConsumerState<ModelTreeWidget> createState() => _ModelTreeWidgetState();
 }
 
-class _ModelTreeWidgetState extends State<ModelTreeWidget> {
+class _ModelTreeWidgetState extends ConsumerState<ModelTreeWidget> {
   final _expanded = <int>{0};
 
   static const _tree = [
@@ -62,6 +64,10 @@ class _ModelTreeWidgetState extends State<ModelTreeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Prefetch API data; will be used when backend format is finalized
+    // ignore: unused_local_variable
+    final apiTree = ref.watch(modelTreeProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(

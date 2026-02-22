@@ -23,11 +23,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   final _dio = ApiClient().dio;
 
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(String phone, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final res = await _dio.post('/auth/login', data: {
-        'username': username,
+        'phone': phone,
         'password': password,
       });
       final token = res.data['access_token'] as String;
@@ -43,13 +43,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<bool> register(String username, String password, {String? email}) async {
+  Future<bool> register({
+    required String phone,
+    required String password,
+    required String regionId,
+    required String subject,
+    required int targetScore,
+    String? nickname,
+  }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final res = await _dio.post('/auth/register', data: {
-        'username': username,
+        'phone': phone,
         'password': password,
-        if (email != null) 'email': email,
+        'region_id': regionId,
+        'subject': subject,
+        'target_score': targetScore,
+        if (nickname != null) 'nickname': nickname,
       });
       final token = res.data['access_token'] as String;
       final prefs = await SharedPreferences.getInstance();

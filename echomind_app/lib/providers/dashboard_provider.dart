@@ -2,29 +2,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/core/api_client.dart';
 
 class DashboardData {
-  final String todayClosed;
-  final String studyDuration;
-  final String weekClosed;
-  final int predictedScore;
-  final int targetScore;
-  final List<int> trendData;
+  final int totalQuestions;
+  final int errorCount;
+  final int masteryCount;
+  final int weakCount;
+  final double? predictedScore;
+  final double formulaMemoryRate;
+  final double modelIdentifyRate;
+  final double calculationAccuracy;
+  final double readingAccuracy;
 
   const DashboardData({
-    this.todayClosed = '0',
-    this.studyDuration = '0m',
-    this.weekClosed = '0',
-    this.predictedScore = 0,
-    this.targetScore = 70,
-    this.trendData = const [],
+    this.totalQuestions = 0,
+    this.errorCount = 0,
+    this.masteryCount = 0,
+    this.weakCount = 0,
+    this.predictedScore,
+    this.formulaMemoryRate = 0,
+    this.modelIdentifyRate = 0,
+    this.calculationAccuracy = 0,
+    this.readingAccuracy = 0,
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) => DashboardData(
-        todayClosed: json['today_closed']?.toString() ?? '0',
-        studyDuration: json['study_duration']?.toString() ?? '0m',
-        weekClosed: json['week_closed']?.toString() ?? '0',
-        predictedScore: json['predicted_score'] ?? 0,
-        targetScore: json['target_score'] ?? 70,
-        trendData: (json['trend_data'] as List?)?.cast<int>() ?? [],
+        totalQuestions: json['total_questions'] ?? 0,
+        errorCount: json['error_count'] ?? 0,
+        masteryCount: json['mastery_count'] ?? 0,
+        weakCount: json['weak_count'] ?? 0,
+        predictedScore: (json['predicted_score'] as num?)?.toDouble(),
+        formulaMemoryRate: (json['formula_memory_rate'] as num?)?.toDouble() ?? 0,
+        modelIdentifyRate: (json['model_identify_rate'] as num?)?.toDouble() ?? 0,
+        calculationAccuracy: (json['calculation_accuracy'] as num?)?.toDouble() ?? 0,
+        readingAccuracy: (json['reading_accuracy'] as num?)?.toDouble() ?? 0,
       );
 }
 
