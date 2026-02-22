@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
+import 'package:echomind_app/providers/recommendations_provider.dart';
 
-class RecommendationListWidget extends StatelessWidget {
+class RecommendationListWidget extends ConsumerWidget {
   const RecommendationListWidget({super.key});
 
-  static const _items = [
+  // Fallback mock data
+  static const _mockItems = [
     (icon: '!', color: Color(0xFF1C1C1E), title: '待诊断: 2025天津模拟 第5题', tags: ['待诊断', '上传于今日'], route: AppRoutes.aiDiagnosis),
     (icon: 'L1', color: AppTheme.primary, title: '板块运动 -- 建模层训练', tags: ['本周错2次', '约5分钟'], route: AppRoutes.modelDetail),
     (icon: 'KP', color: AppTheme.textSecondary, title: '库仑定律适用条件 -- 知识补强', tags: ['理解不深', '约3分钟'], route: AppRoutes.knowledgeDetail),
@@ -14,7 +17,10 @@ class RecommendationListWidget extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recs = ref.watch(recommendationsProvider);
+    final apiItems = recs.valueOrNull;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -22,8 +28,16 @@ class RecommendationListWidget extends StatelessWidget {
         children: [
           const Text('推荐学习', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
-          for (final item in _items)
-            _RecItem(icon: item.icon, color: item.color, title: item.title, tags: item.tags, onTap: () => context.push(item.route)),
+          if (apiItems != null)
+            for (final item in apiItems)
+              _RecItem(
+                icon: item.icon, color: AppTheme.primary,
+                title: item.title, tags: item.tags,
+                onTap: () => context.push(item.route.isNotEmpty ? item.route : AppRoutes.modelDetail),
+              )
+          else
+            for (final item in _mockItems)
+              _RecItem(icon: item.icon, color: item.color, title: item.title, tags: item.tags, onTap: () => context.push(item.route)),
         ],
       ),
     );

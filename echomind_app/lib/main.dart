@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/app/app_router.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 
-void main() => runApp(const EchoMindApp());
+void main() => runApp(const ProviderScope(child: EchoMindApp()));
 
 class EchoMindApp extends StatelessWidget {
   const EchoMindApp({super.key});

@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
+import 'package:echomind_app/providers/dashboard_provider.dart';
 
-class TopDashboardWidget extends StatelessWidget {
+class TopDashboardWidget extends ConsumerWidget {
   const TopDashboardWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dashboard = ref.watch(dashboardProvider);
+    final data = dashboard.valueOrNull ?? const DashboardData(
+      todayClosed: '3', studyDuration: '2h25m', weekClosed: '12',
+      predictedScore: 63, targetScore: 70, trendData: [55, 57, 59, 61, 60, 63],
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          const _StatsRow(),
+          _StatsRow(data: data),
           const SizedBox(height: 12),
-          _PredictionCard(onTap: () => context.push(AppRoutes.predictionCenter)),
+          _PredictionCard(data: data, onTap: () => context.push(AppRoutes.predictionCenter)),
           const SizedBox(height: 12),
           _QuickStartButton(onTap: () => context.push(AppRoutes.modelTraining)),
         ],
@@ -24,14 +31,15 @@ class TopDashboardWidget extends StatelessWidget {
 }
 
 class _StatsRow extends StatelessWidget {
-  const _StatsRow();
+  final DashboardData data;
+  const _StatsRow({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    const stats = [
-      ('3', '今日闭环'),
-      ('2h25m', '学习时长'),
-      ('12', '本周闭环'),
+    final stats = [
+      (data.todayClosed, '今日闭环'),
+      (data.studyDuration, '学习时长'),
+      (data.weekClosed, '本周闭环'),
     ];
     return Row(
       children: [
@@ -83,11 +91,13 @@ class _StatCard extends StatelessWidget {
 }
 
 class _PredictionCard extends StatelessWidget {
+  final DashboardData data;
   final VoidCallback onTap;
-  const _PredictionCard({required this.onTap});
+  const _PredictionCard({required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final trend = data.trendData.isEmpty ? [55, 57, 59, 61, 60, 63] : data.trendData;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -107,18 +117,18 @@ class _PredictionCard extends StatelessWidget {
                     style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 4),
-                  const Row(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text('63', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, fontFeatures: [FontFeature.tabularFigures()])),
-                      SizedBox(width: 4),
-                      Text('/ 100', style: TextStyle(fontSize: 15, color: AppTheme.textSecondary, fontFeatures: [FontFeature.tabularFigures()])),
+                      Text('${data.predictedScore}', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, fontFeatures: [FontFeature.tabularFigures()])),
+                      const SizedBox(width: 4),
+                      const Text('/ 100', style: TextStyle(fontSize: 15, color: AppTheme.textSecondary, fontFeatures: [FontFeature.tabularFigures()])),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '目标 70 分 -- 查看预测详情',
+                    '目标 ${data.targetScore} 分 -- 查看预测详情',
                     style: TextStyle(fontSize: 13, color: AppTheme.accent, fontWeight: FontWeight.w500),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -130,7 +140,7 @@ class _PredictionCard extends StatelessWidget {
             SizedBox(
               width: 100,
               height: 50,
-              child: CustomPaint(painter: _TrendPainter([55, 57, 59, 61, 60, 63])),
+              child: CustomPaint(painter: _TrendPainter(trend)),
             ),
           ],
         ),
