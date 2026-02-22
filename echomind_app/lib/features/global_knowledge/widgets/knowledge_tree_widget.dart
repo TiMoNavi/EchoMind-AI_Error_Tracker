@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
+import 'package:echomind_app/providers/knowledge_tree_provider.dart';
 
 // Level colors: L0=red, L1=orange, L2=yellow, L3=blue, L4=green, L5=deep green
 Color _levelColor(int level) => switch (level) {
@@ -13,19 +15,19 @@ Color _levelColor(int level) => switch (level) {
   _ => const Color(0xFF00875A),
 };
 
-class KnowledgeTreeWidget extends StatefulWidget {
+class KnowledgeTreeWidget extends ConsumerStatefulWidget {
   const KnowledgeTreeWidget({super.key});
 
   @override
-  State<KnowledgeTreeWidget> createState() => _KnowledgeTreeWidgetState();
+  ConsumerState<KnowledgeTreeWidget> createState() => _KnowledgeTreeWidgetState();
 }
 
-class _KnowledgeTreeWidgetState extends State<KnowledgeTreeWidget> {
+class _KnowledgeTreeWidgetState extends ConsumerState<KnowledgeTreeWidget> {
   int _subject = 0;
   final _expandedL1 = <int>{0}; // 力学 default open
   final _expandedL2 = <String>{'0-0'}; // 力的概念 default open
 
-  // Tree data: chapters > sections > knowledge points
+  // Fallback mock tree data
   static const _tree = [
     (
       title: '力学', level: 4,
