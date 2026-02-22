@@ -1,14 +1,26 @@
-"""Seed script — insert sample knowledge points, models, and regional templates."""
+"""Seed script — insert sample data for all core tables (idempotent via merge)."""
 import asyncio
+import uuid
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from app.core.config import settings
 from app.core.database import Base
+from app.core.security import hash_password
 from app.models.knowledge_point import KnowledgePoint
 from app.models.model import Model
 from app.models.regional_template import RegionalTemplate
-from app.models.confusion_group import ConfusionGroup
+from app.models.student import Student
+from app.models.question import Question
+from app.models.student_mastery import StudentMastery
+
+# 固定 UUID 以支持幂等
+TEST_STUDENT_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
+TEST_QUESTION_IDS = [
+    uuid.UUID("00000000-0000-0000-0000-000000000101"),
+    uuid.UUID("00000000-0000-0000-0000-000000000102"),
+    uuid.UUID("00000000-0000-0000-0000-000000000103"),
+]
 
 KNOWLEDGE_POINTS = [
     {"id": "kp_coulomb_law", "name": "库仑定律", "chapter": "静电场", "section": "电荷与库仑定律", "conclusion_level": 1, "related_model_ids": ["model_coulomb_balance"]},
@@ -64,16 +76,62 @@ async def seed():
 
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
     async with session_factory() as session:
+        # 知识点 + 模型 + 地区模板（merge 实现幂等）
         for kp in KNOWLEDGE_POINTS:
-            session.add(KnowledgePoint(**kp))
+            await session.merge(KnowledgePoint(**kp))
         for m in MODELS:
-            session.add(Model(**m))
+            await session.merge(Model(**m))
         for t in TEMPLATES:
-            session.add(RegionalTemplate(**t))
+            await session.merge(RegionalTemplate(**t))
+
+        # 测试学生
+        await session.merge(Student(
+            id=TEST_STUDENT_ID,
+            phone="13800000001",
+            password_hash=hash_password("test1234"),
+            nickname="测试学生",
+            region_id="tianjin",
+            subject="physics",
+            target_score=70,
+        ))
+
+        # 测试题目（3 条）
+        for i, qid in enumerate(TEST_QUESTION_IDS):
+            await session.merge(Question(
+                id=qid,
+                student_id=TEST_STUDENT_ID,
+                source="manual",
+                image_url=f"https://example.com/q{i+1}.png",
+                is_correct=[True, False, None][i],
+                diagnosis_status="pending",
+            ))
+
+        # 测试掌握度（2 条：1 个知识点 + 1 个模型）
+        await session.merge(StudentMastery(
+            id=uuid.UUID("00000000-0000-0000-0000-000000000201"),
+            student_id=TEST_STUDENT_ID,
+            target_type="kp",
+            target_id="kp_newton_second",
+            current_level=3,
+            error_count=2,
+            correct_count=5,
+            is_unstable=False,
+        ))
+        await session.merge(StudentMastery(
+            id=uuid.UUID("00000000-0000-0000-0000-000000000202"),
+            student_id=TEST_STUDENT_ID,
+            target_type="model",
+            target_id="model_plate_motion",
+            current_level=1,
+            error_count=4,
+            correct_count=1,
+            is_unstable=True,
+        ))
+
         await session.commit()
 
     await engine.dispose()
-    print("Seed complete.")
+    print("Seed complete (idempotent).")
 
 
 if __name__ == "__main__":

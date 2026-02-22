@@ -87,6 +87,7 @@ EchoMind-AI_Error_Tracker/
 │   │   │   ├── question_detail/ # 题目详情
 │   │   │   ├── knowledge_detail/ # 知识点详情
 │   │   │   ├── model_detail/   # 模型详情
+│   │   │   ├── knowledge_learning/ # 知识点学习 (5步流程)
 │   │   │   ├── flashcard_review/ # 闪卡复习
 │   │   │   ├── prediction_center/ # 预测中心
 │   │   │   ├── profile/        # 个人中心
@@ -309,3 +310,17 @@ docker compose exec api alembic upgrade head
 ```
 
 API 默认监听 `0.0.0.0:8000`，可通过 Nginx 反向代理添加 HTTPS。
+
+## 9. 测试
+
+```bash
+cd backend
+
+# 安装测试依赖
+pip install httpx pytest
+
+# 运行冒烟测试 (需先启动 API + PostgreSQL)
+pytest tests/test_smoke.py -v
+```
+
+> 注意：pydantic-settings 会自动将环境变量名做大小写转换，`DATABASE_URL` 和 `database_url` 等价。
