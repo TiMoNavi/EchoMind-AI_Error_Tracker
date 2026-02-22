@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Question
-from app.schemas.question import QuestionUploadRequest, QuestionResponse, HistoryDateGroup
+from app.schemas.question import QuestionUploadRequest, QuestionResponse, QuestionDetailResponse, HistoryDateGroup
 from app.services.mastery_service import update_mastery
 
 
@@ -44,3 +44,18 @@ async def get_history(db: AsyncSession, student_id: uuid.UUID) -> list[HistoryDa
         ))
 
     return [HistoryDateGroup(date=d, questions=qs) for d, qs in groups.items()]
+
+
+async def get_question_detail(db: AsyncSession, question_id: str, student_id: uuid.UUID) -> QuestionDetailResponse | None:
+    result = await db.execute(
+        select(Question).where(Question.id == question_id, Question.student_id == student_id)
+    )
+    q = result.scalar_one_or_none()
+    if not q:
+        return None
+    return QuestionDetailResponse(
+        id=str(q.id), image_url=q.image_url, is_correct=q.is_correct,
+        source=q.source, diagnosis_status=q.diagnosis_status,
+        diagnosis_result=q.diagnosis_result, created_at=q.created_at,
+        primary_model_id=q.primary_model_id, related_kp_ids=q.related_kp_ids,
+    )
