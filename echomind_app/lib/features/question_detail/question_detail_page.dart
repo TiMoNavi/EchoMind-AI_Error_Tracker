@@ -7,7 +7,8 @@ import 'package:echomind_app/features/question_detail/widgets/question_relations
 import 'package:echomind_app/features/question_detail/widgets/question_source_widget.dart';
 
 class QuestionDetailPage extends StatelessWidget {
-  const QuestionDetailPage({super.key});
+  final String questionId;
+  const QuestionDetailPage({super.key, required this.questionId});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +21,14 @@ class QuestionDetailPage extends StatelessWidget {
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 16),
-                children: const [
-                  QuestionContentWidget(),
-                  SizedBox(height: 12),
-                  AnswerResultWidget(),
-                  SizedBox(height: 12),
-                  QuestionRelationsWidget(),
-                  SizedBox(height: 12),
-                  QuestionSourceWidget(),
+                children: [
+                  QuestionContentWidget(questionId: questionId),
+                  const SizedBox(height: 12),
+                  const AnswerResultWidget(),
+                  const SizedBox(height: 12),
+                  QuestionRelationsWidget(questionId: questionId),
+                  const SizedBox(height: 12),
+                  QuestionSourceWidget(questionId: questionId),
                 ],
               ),
             ),

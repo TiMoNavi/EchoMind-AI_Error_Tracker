@@ -25,7 +25,7 @@ class RelatedQuestionListWidget extends StatelessWidget {
             final (id, title, result) = _items[i];
             final isWrong = result == '错误';
             return GestureDetector(
-              onTap: () => context.push(AppRoutes.questionDetail),
+              onTap: () => context.push(AppRoutes.questionDetailPath('mock')),
               child: Container(
                 margin: EdgeInsets.only(bottom: i < _items.length - 1 ? 8 : 0),
                 padding: const EdgeInsets.all(12),

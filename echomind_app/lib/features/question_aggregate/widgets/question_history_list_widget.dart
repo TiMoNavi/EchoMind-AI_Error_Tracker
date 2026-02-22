@@ -24,7 +24,7 @@ class QuestionHistoryListWidget extends StatelessWidget {
           const SizedBox(height: 8),
           for (final item in _items)
             GestureDetector(
-              onTap: () => context.push(AppRoutes.questionDetail),
+              onTap: () => context.push(AppRoutes.questionDetailPath('mock')),
               behavior: HitTestBehavior.opaque,
               child: Container(
                 margin: const EdgeInsets.only(bottom: 8),

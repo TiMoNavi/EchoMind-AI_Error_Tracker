@@ -17,7 +17,7 @@ class AppRoutes {
   static const String modelTraining = '/model-training';
   static const String predictionCenter = '/prediction-center';
   static const String questionAggregate = '/question-aggregate';
-  static const String questionDetail = '/question-detail';
+  static const String questionDetail = '/question-detail/:id';
   static const String uploadHistory = '/upload-history';
   static const String uploadMenu = '/upload-menu';
   static const String weeklyReview = '/weekly-review';
@@ -28,4 +28,5 @@ class AppRoutes {
   // 路径生成辅助方法
   static String knowledgeDetailPath(String id) => '/knowledge-detail/$id';
   static String modelDetailPath(String id) => '/model-detail/$id';
+  static String questionDetailPath(String id) => '/question-detail/$id';
 }

@@ -66,7 +66,7 @@ class HistoryRecordListWidget extends ConsumerWidget {
     required String type, required String time, required String status, required bool done,
   }) {
     return GestureDetector(
-      onTap: () => context.push(AppRoutes.questionDetail),
+      onTap: () => context.push(AppRoutes.questionDetailPath('mock')),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
