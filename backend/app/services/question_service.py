@@ -9,11 +9,14 @@ from app.models.question import Question
 from app.models.model import Model
 from app.models.knowledge_point import KnowledgePoint
 from app.schemas.question import QuestionUploadRequest, QuestionResponse, QuestionDetailResponse, HistoryDateGroup, AggregateItem
-from app.services.mastery_service import update_mastery
+from app.services.mastery_service import update_mastery, update_student_dimensions, update_predicted_score
 
 
 async def create_question(db: AsyncSession, req: QuestionUploadRequest, student_id: uuid.UUID) -> QuestionResponse:
-    q = Question(student_id=student_id, image_url=req.image_url, is_correct=req.is_correct, source=req.source)
+    q = Question(
+        student_id=student_id, image_url=req.image_url, is_correct=req.is_correct,
+        source=req.source, primary_model_id=req.primary_model_id, related_kp_ids=req.related_kp_ids,
+    )
     db.add(q)
 
     # 如果有正误判断，更新掌握度
@@ -22,6 +25,11 @@ async def create_question(db: AsyncSession, req: QuestionUploadRequest, student_
     if req.is_correct is not None and q.related_kp_ids:
         for kp_id in q.related_kp_ids:
             await update_mastery(db, student_id, "kp", kp_id, req.is_correct)
+
+    # 聚合更新 Student 四维能力 + 预测分数
+    if req.is_correct is not None:
+        await update_student_dimensions(db, student_id)
+        await update_predicted_score(db, student_id)
 
     await db.commit()
     await db.refresh(q)

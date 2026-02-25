@@ -34,6 +34,24 @@ async def get_weekly_review(db: AsyncSession, user: Student) -> WeeklyReviewResp
     )
     new_mastered = mastery_result.scalar() or 0
 
+    # 上周正确率（用于计算 score_change）
+    two_weeks_ago = week_ago - timedelta(days=7)
+    last_week_result = await db.execute(
+        select(
+            func.count().label("total"),
+            func.count().filter(Question.is_correct == True).label("correct"),
+        ).where(
+            Question.student_id == user.id,
+            Question.created_at >= two_weeks_ago,
+            Question.created_at < week_ago,
+        )
+    )
+    lw = last_week_result.one()
+    this_week_rate = row.correct / row.total if row.total > 0 else 0
+    last_week_rate = lw.correct / lw.total if lw.total > 0 else 0
+    # 折算 150 分制的分差
+    score_change = round((this_week_rate - last_week_rate) * 150, 1)
+
     # 薄弱项作为下周重点
     weak_result = await db.execute(
         select(StudentMastery.target_id).where(
@@ -44,7 +62,7 @@ async def get_weekly_review(db: AsyncSession, user: Student) -> WeeklyReviewResp
     next_week_focus = [r[0] for r in weak_result.all()]
 
     return WeeklyReviewResponse(
-        score_change=0.0,
+        score_change=score_change,
         weekly_progress=WeeklyProgress(
             total_questions=row.total,
             correct_count=row.correct,

@@ -8,6 +8,7 @@ from app.models.student_mastery import StudentMastery
 from app.models.knowledge_point import KnowledgePoint
 from app.models.model import Model
 from app.schemas.flashcard import FlashcardItem
+from app.services.mastery_service import update_student_dimensions, update_predicted_score
 
 
 async def get_flashcards(db: AsyncSession, student_id) -> list[FlashcardItem]:
@@ -60,5 +61,10 @@ async def submit_review(db: AsyncSession, mastery_id: str, student_id, quality: 
     # 简化 SM-2: quality >= 3 加分，否则扣分
     delta = (quality - 2.5) * 10
     m.mastery_value = max(0, min(100, m.mastery_value + delta))
+
+    # 聚合更新 Student 四维能力 + 预测分数
+    await update_student_dimensions(db, m.student_id)
+    await update_predicted_score(db, m.student_id)
+
     await db.commit()
     return True

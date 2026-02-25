@@ -5,15 +5,14 @@ services:
       POSTGRES_DB: echomind
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+    # 不暴露主机端口，避免与 cccc-db 冲突；API 通过 Docker 内网连接
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   api:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "8001:8000"
     env_file:
       - ./backend/.env
     environment:

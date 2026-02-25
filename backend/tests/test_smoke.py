@@ -4,10 +4,12 @@ Usage:
     pip install httpx pytest pytest-asyncio
     pytest tests/test_smoke.py -v
 """
+import os
+
 import pytest
 import httpx
 
-BASE = "http://localhost:8000"
+BASE = os.getenv("API_BASE", "http://localhost:8000")
 
 # ── shared state across tests ──
 _state: dict = {}
@@ -144,6 +146,19 @@ def test_upload_question(client: httpx.Client):
     _state["question_id"] = data["id"]
 
 
+# ── 12b. Upload question with model/kp + is_correct → triggers dimension update ──
+
+def test_upload_question_with_mastery(client: httpx.Client):
+    r = client.post("/api/questions/upload", headers=_auth_headers(), json={
+        "image_url": "https://example.com/q_mastery.png",
+        "source": "manual",
+        "is_correct": False,
+        "primary_model_id": "model_plate_motion",
+        "related_kp_ids": ["kp_newton_second"],
+    })
+    assert r.status_code == 201
+
+
 # ── 13. Question history ──
 
 def test_question_history(client: httpx.Client):
@@ -162,6 +177,18 @@ def test_dashboard(client: httpx.Client):
     data = r.json()
     assert "total_questions" in data
     assert data["total_questions"] >= 1
+
+
+# ── 14b. Dashboard dimensions non-zero after mastery upload ──
+
+def test_dashboard_dimensions(client: httpx.Client):
+    r = client.get("/api/dashboard", headers=_auth_headers())
+    assert r.status_code == 200
+    data = r.json()
+    assert data["formula_memory_rate"] > 0, "formula_memory_rate should be non-zero after mastery upload"
+    assert data["model_identify_rate"] > 0, "model_identify_rate should be non-zero after mastery upload"
+    assert data["predicted_score"] is not None, "predicted_score should be set after mastery upload"
+    assert data["predicted_score"] > 0, "predicted_score should be positive"
 
 
 # ── 15. Recommendations ──
