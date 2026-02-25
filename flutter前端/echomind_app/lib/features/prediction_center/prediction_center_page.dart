@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_background_blobs.dart';
 import 'package:echomind_app/features/prediction_center/widgets/top_frame_widget.dart';
 import 'package:echomind_app/features/prediction_center/widgets/score_card_widget.dart';
 import 'package:echomind_app/features/prediction_center/widgets/trend_card_widget.dart';
@@ -12,22 +13,28 @@ class PredictionCenterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.canvas,
       body: SafeArea(
         child: Column(
           children: [
-            TopFrameWidget(),
+            const TopFrameWidget(),
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(bottom: 24),
+              child: Stack(
                 children: [
-                  ScoreCardWidget(),
-                  SizedBox(height: 16),
-                  TrendCardWidget(),
-                  SizedBox(height: 20),
-                  ScorePathTableWidget(),
-                  SizedBox(height: 20),
-                  PriorityModelListWidget(),
+                  const ClayBackgroundBlobs(),
+                  ListView(
+                    clipBehavior: Clip.none,
+                    padding: const EdgeInsets.only(bottom: 24),
+                    children: const [
+                      ScoreCardWidget(),
+                      SizedBox(height: 20),
+                      TrendCardWidget(),
+                      SizedBox(height: 24),
+                      ScorePathTableWidget(),
+                      SizedBox(height: 24),
+                      PriorityModelListWidget(),
+                    ],
+                  ),
                 ],
               ),
             ),

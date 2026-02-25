@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
 class ExamHeatmapWidget extends StatelessWidget {
-  const ExamHeatmapWidget({super.key});
+  final List<HeatmapQuestion> questions;
 
-  static const _questions = [
-    (num: 5, freq: 18, level: 1),
-    (num: 10, freq: 16, level: 0),
-    (num: 15, freq: 15, level: 0),
-    (num: 7, freq: 12, level: 2),
-    (num: 13, freq: 11, level: 1),
-    (num: 19, freq: 10, level: 1),
-    (num: 4, freq: 9, level: 3),
-    (num: 9, freq: 8, level: 3),
-    (num: 14, freq: 8, level: 3),
-    (num: 18, freq: 7, level: 2),
-    (num: 12, freq: 6, level: 2),
-    (num: 20, freq: 6, level: 3),
-    (num: 2, freq: 5, level: 4),
-    (num: 6, freq: 5, level: 4),
-    (num: 11, freq: 4, level: 4),
-    (num: 17, freq: 4, level: 4),
-    (num: 1, freq: 3, level: 5),
-    (num: 3, freq: 2, level: 5),
-    (num: 8, freq: 2, level: 5),
-    (num: 16, freq: 2, level: 5),
-  ];
+  const ExamHeatmapWidget({
+    super.key,
+    this.questions = const [
+      HeatmapQuestion(num: 5, freq: 18, level: 1),
+      HeatmapQuestion(num: 10, freq: 16, level: 0),
+      HeatmapQuestion(num: 15, freq: 15, level: 0),
+      HeatmapQuestion(num: 7, freq: 12, level: 2),
+      HeatmapQuestion(num: 13, freq: 11, level: 1),
+      HeatmapQuestion(num: 19, freq: 10, level: 1),
+      HeatmapQuestion(num: 4, freq: 9, level: 3),
+      HeatmapQuestion(num: 9, freq: 8, level: 3),
+      HeatmapQuestion(num: 14, freq: 8, level: 3),
+      HeatmapQuestion(num: 18, freq: 7, level: 2),
+      HeatmapQuestion(num: 12, freq: 6, level: 2),
+      HeatmapQuestion(num: 20, freq: 6, level: 3),
+      HeatmapQuestion(num: 2, freq: 5, level: 4),
+      HeatmapQuestion(num: 6, freq: 5, level: 4),
+      HeatmapQuestion(num: 11, freq: 4, level: 4),
+      HeatmapQuestion(num: 17, freq: 4, level: 4),
+      HeatmapQuestion(num: 1, freq: 3, level: 5),
+      HeatmapQuestion(num: 3, freq: 2, level: 5),
+      HeatmapQuestion(num: 8, freq: 2, level: 5),
+      HeatmapQuestion(num: 16, freq: 2, level: 5),
+    ],
+  });
 
   static const _legend = [
     (label: '未掌握', level: 0),
@@ -50,21 +55,17 @@ class ExamHeatmapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('题号热力图', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 12),
+            Text('题号热力图', style: AppTheme.heading(size: 18)),
+            const SizedBox(height: 14),
             LayoutBuilder(builder: (context, constraints) {
               final size = constraints.maxWidth;
-              final rects = _layoutTreemap(_questions, size, size);
+              final rects = _layoutTreemap(questions, size, size);
               return SizedBox(
                 width: size,
                 height: size,
@@ -79,13 +80,13 @@ class ExamHeatmapWidget extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () => context.push(AppRoutes.questionAggregate),
                           child: Container(
-                            margin: const EdgeInsets.all(1.5),
+                            margin: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              color: _color(_questions[i].level),
-                              borderRadius: BorderRadius.circular(6),
+                              color: _color(questions[i].level),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                             alignment: Alignment.center,
-                            child: _buildLabel(_questions[i], rects[i]),
+                            child: _buildLabel(questions[i], rects[i]),
                           ),
                         ),
                       ),
@@ -93,18 +94,25 @@ class ExamHeatmapWidget extends StatelessWidget {
                 ),
               );
             }),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Wrap(
-              spacing: 10,
-              runSpacing: 4,
+              spacing: 12,
+              runSpacing: 6,
               children: [
                 for (final l in _legend)
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(width: 10, height: 10, decoration: BoxDecoration(color: _color(l.level), borderRadius: BorderRadius.circular(2))),
-                      const SizedBox(width: 4),
-                      Text(l.label, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: _color(l.level),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(l.label, style: AppTheme.label(size: 11)),
                     ],
                   ),
               ],
@@ -115,24 +123,24 @@ class ExamHeatmapWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildLabel(dynamic q, Rect r) {
+  Widget _buildLabel(HeatmapQuestion q, Rect r) {
     final minDim = r.width < r.height ? r.width : r.height;
     if (minDim < 24) return const SizedBox.shrink();
     final fontSize = minDim < 36 ? 10.0 : 13.0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('${q.num}', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700, color: Colors.white)),
+        Text('${q.num}', style: GoogleFonts.nunito(fontSize: fontSize, fontWeight: FontWeight.w800, color: Colors.white)),
         if (minDim > 40)
-          Text('${q.freq}次', style: TextStyle(fontSize: fontSize - 2, color: Colors.white70)),
+          Text('${q.freq}次', style: GoogleFonts.dmSans(fontSize: fontSize - 2, color: Colors.white70)),
       ],
     );
   }
 
   /// Squarified treemap layout algorithm
-  static List<Rect> _layoutTreemap(List<dynamic> items, double w, double h) {
-    final totalValue = items.fold<double>(0, (s, q) => s + (q.freq as num).toDouble());
-    final List<double> areas = items.map<double>((q) => (q.freq as num) / totalValue * w * h).toList();
+  static List<Rect> _layoutTreemap(List<HeatmapQuestion> items, double w, double h) {
+    final totalValue = items.fold<double>(0, (s, q) => s + q.freq.toDouble());
+    final List<double> areas = items.map<double>((q) => q.freq / totalValue * w * h).toList();
     final rects = List<Rect>.filled(items.length, Rect.zero);
     _squarify(areas, List.generate(items.length, (i) => i), rects, 0, 0, w, h);
     return rects;
@@ -198,4 +206,16 @@ class ExamHeatmapWidget extends StatelessWidget {
       _squarify(areas, restIndices, out, x, y + rowH, w, h - rowH);
     }
   }
+}
+
+class HeatmapQuestion {
+  final int num;
+  final int freq;
+  final int level;
+
+  const HeatmapQuestion({
+    required this.num,
+    required this.freq,
+    required this.level,
+  });
 }

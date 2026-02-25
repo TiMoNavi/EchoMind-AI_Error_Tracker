@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class BoardFeedbackWidget extends StatelessWidget {
   const BoardFeedbackWidget({super.key});
@@ -7,22 +8,17 @@ class BoardFeedbackWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
-        child: const Column(
+        child: Column(
           children: [
-            Text('--', style: TextStyle(fontSize: 48, color: AppTheme.divider)),
-            SizedBox(height: 12),
-            Text('改版建议', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            SizedBox(height: 4),
+            Text('--', style: AppTheme.label(size: 48)),
+            const SizedBox(height: 12),
+            Text('改版建议', style: AppTheme.heading(size: 16)),
+            const SizedBox(height: 4),
             Text('提交你对现有功能的改进建议',
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                style: AppTheme.label(size: 13),
                 textAlign: TextAlign.center),
           ],
         ),

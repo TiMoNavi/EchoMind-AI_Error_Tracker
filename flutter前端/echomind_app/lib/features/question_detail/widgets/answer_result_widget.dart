@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
 class AnswerResultWidget extends StatelessWidget {
-  const AnswerResultWidget({super.key});
+  final String status;
+  final String uploadDate;
+  final String statusTag;
+  final bool isPending;
+  final String diagnosisHint;
+
+  const AnswerResultWidget({
+    super.key,
+    this.status = '错误',
+    this.uploadDate = '2月8日上传',
+    this.statusTag = '待诊断',
+    this.isPending = true,
+    this.diagnosisHint = 'AI将通过对话定位你的错误在哪一层',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          // Status card
           _statusCard(),
           const SizedBox(height: 12),
-          // Diagnosis button
           _diagnosisButton(context),
         ],
       ),
@@ -23,52 +35,37 @@ class AnswerResultWidget extends StatelessWidget {
   }
 
   Widget _statusCard() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
+    return ClayCard(
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Circle X icon
           Container(
             width: 40, height: 40,
-            decoration: const BoxDecoration(
-              color: Color(0xFF3A3A3C),
+            decoration: BoxDecoration(
+              color: AppTheme.danger.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: const Text('X', style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14,
-            )),
+            child: Text('X', style: AppTheme.label(size: 14, color: AppTheme.danger)),
           ),
           const SizedBox(width: 12),
-          // Text
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('错误', style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w600,
-                )),
-                SizedBox(height: 2),
-                Text('2月8日上传', style: TextStyle(
-                  fontSize: 13, color: AppTheme.textSecondary,
-                )),
+                Text(status, style: AppTheme.body(size: 15, weight: FontWeight.w700)),
+                const SizedBox(height: 2),
+                Text(uploadDate, style: AppTheme.label(size: 13)),
               ],
             ),
           ),
-          // Tag
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFF3A3A3C),
-              borderRadius: BorderRadius.circular(6),
+              color: AppTheme.foreground,
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
-            child: const Text('待诊断', style: TextStyle(
-              fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500,
-            )),
+            child: Text(statusTag, style: AppTheme.label(size: 12, color: Colors.white)),
           ),
         ],
       ),
@@ -78,28 +75,29 @@ class AnswerResultWidget extends StatelessWidget {
   Widget _diagnosisButton(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
+        Container(
           width: double.infinity,
-          height: 46,
+          height: 48,
+          decoration: BoxDecoration(
+            gradient: AppTheme.gradientPrimary,
+            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+            boxShadow: AppTheme.shadowClayButton,
+          ),
           child: ElevatedButton(
             onPressed: () => context.push(AppRoutes.aiDiagnosis),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primary,
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               ),
-              elevation: 0,
             ),
-            child: const Text('进入诊断',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            child: Text('进入诊断', style: AppTheme.body(size: 16, weight: FontWeight.w700, color: Colors.white)),
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'AI将通过对话定位你的错误在哪一层',
-          style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
-        ),
+        Text(diagnosisHint, style: AppTheme.label(size: 12)),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
@@ -9,18 +10,15 @@ class RelatedModelsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with subtitle
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text('关联模型',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-              Text('使用此知识点的模型',
-                  style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            children: [
+              Text('关联模型', style: AppTheme.heading(size: 18)),
+              Text('使用此知识点的模型', style: AppTheme.label(size: 13)),
             ],
           ),
           const SizedBox(height: 10),
@@ -31,58 +29,52 @@ class RelatedModelsWidget extends StatelessWidget {
   }
 
   Widget _listGroup(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
-      child: Column(
-        children: [
-          _item(context, '库仑力平衡', 'L2 · 列式卡住',
-              const Color(0xFFFF9500)),
-          const Divider(height: 1, indent: 36,
-              color: AppTheme.divider),
-          _item(context, '电场中的功能关系', 'L0 · 未接触',
-              const Color(0xFFAEAEB2)),
-        ],
-      ),
+    return Column(
+      children: [
+        _item(context, '库仑力平衡', 'L2 · 列式卡住',
+            const Color(0xFFFF9500)),
+        const SizedBox(height: 10),
+        _item(context, '电场中的功能关系', 'L0 · 未接触',
+            const Color(0xFFAEAEB2)),
+      ],
     );
   }
 
   Widget _item(BuildContext context, String name, String desc, Color dotColor) {
-    return InkWell(
+    return ClayCard(
       onTap: () => context.push(AppRoutes.modelDetail),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                colors: [dotColor.withValues(alpha: 0.8), dotColor],
               ),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              boxShadow: [
+                BoxShadow(
+                  color: dotColor.withValues(alpha: 0.3),
+                  blurRadius: 8, offset: const Offset(0, 3)),
+              ],
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 2),
-                  Text(desc,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppTheme.textSecondary)),
-                ],
-              ),
+            child: const Icon(Icons.hub_rounded, size: 16, color: Colors.white),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: AppTheme.body(size: 14, weight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text(desc, style: AppTheme.label(size: 12)),
+              ],
             ),
-            const Icon(Icons.chevron_right,
-                size: 18, color: AppTheme.textSecondary),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right, size: 18, color: AppTheme.muted),
+        ],
       ),
     );
   }

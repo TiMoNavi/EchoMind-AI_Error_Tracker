@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
@@ -9,19 +10,13 @@ class QuestionRelationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 归属模型
-            const Text('归属模型',
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            Text('归属模型', style: AppTheme.label(size: 12)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 6,
@@ -30,9 +25,7 @@ class QuestionRelationsWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 14),
-            // 关联知识点
-            const Text('关联知识点',
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            Text('关联知识点', style: AppTheme.label(size: 12)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 6,
@@ -55,12 +48,10 @@ class QuestionRelationsWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: AppTheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(6),
+          color: AppTheme.accent.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         ),
-        child: Text(text, style: const TextStyle(
-          fontSize: 12, color: AppTheme.primary, fontWeight: FontWeight.w500,
-        )),
+        child: Text(text, style: AppTheme.label(size: 12, color: AppTheme.accent)),
       ),
     );
   }
@@ -71,12 +62,10 @@ class QuestionRelationsWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: AppTheme.background,
-          borderRadius: BorderRadius.circular(6),
+          color: AppTheme.canvas,
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         ),
-        child: Text(text, style: const TextStyle(
-          fontSize: 12, color: AppTheme.textSecondary,
-        )),
+        child: Text(text, style: AppTheme.label(size: 12)),
       ),
     );
   }

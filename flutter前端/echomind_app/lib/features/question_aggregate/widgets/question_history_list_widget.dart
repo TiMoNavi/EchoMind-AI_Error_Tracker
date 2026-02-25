@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
@@ -18,37 +19,22 @@ class QuestionHistoryListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('做过的题目',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-              Text('${_items.length}题',
-                  style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+              Text('做过的题目', style: AppTheme.heading(size: 18)),
+              Text('${_items.length}题', style: AppTheme.label(size: 13)),
             ],
           ),
-          const SizedBox(height: 10),
-          // List
-          Container(
-            decoration: BoxDecoration(
-              color: AppTheme.surface,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            ),
-            child: Column(
-              children: [
-                for (var i = 0; i < _items.length; i++) ...[
-                  if (i > 0)
-                    const Divider(height: 1, indent: 46, color: AppTheme.divider),
-                  _buildItem(context, _items[i]),
-                ],
-              ],
-            ),
-          ),
+          const SizedBox(height: 12),
+          for (var i = 0; i < _items.length; i++) ...[
+            if (i > 0) const SizedBox(height: 10),
+            _buildItem(context, _items[i]),
+          ],
         ],
       ),
     );
@@ -56,45 +42,46 @@ class QuestionHistoryListWidget extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, dynamic item) {
     final bool correct = item.correct as bool;
-    return GestureDetector(
+    return ClayCard(
       onTap: () => context.push(AppRoutes.questionDetail),
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            // X / OK status icon
-            SizedBox(
-              width: 28,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              color: correct
+                  ? AppTheme.success.withValues(alpha: 0.12)
+                  : AppTheme.danger.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
               child: Text(
                 correct ? 'OK' : 'X',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: correct ? AppTheme.accent : const Color(0xFF636366),
+                style: AppTheme.label(
+                  size: 13,
+                  color: correct ? AppTheme.success : AppTheme.danger,
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            // Exam name + date/diagnosis
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.exam as String,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 2),
-                  Text(item.desc as String,
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                ],
-              ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(item.exam as String,
+                    style: AppTheme.body(size: 14, weight: FontWeight.w600),
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 3),
+                Text(item.desc as String,
+                    style: AppTheme.label(size: 12),
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
             ),
-            const Icon(Icons.chevron_right, size: 18, color: AppTheme.textSecondary),
-          ],
-        ),
+          ),
+          const Icon(Icons.chevron_right, size: 18, color: AppTheme.muted),
+        ],
       ),
     );
   }

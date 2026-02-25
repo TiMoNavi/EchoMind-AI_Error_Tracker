@@ -1,57 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class ExamAnalysisWidget extends StatelessWidget {
-  const ExamAnalysisWidget({super.key});
+  final String attitude;
+  final String scoreTag;
+  final List<String> highFreqConcepts;
+  final List<String> weakModels;
+  final List<String> weakModelOutline;
+
+  const ExamAnalysisWidget({
+    super.key,
+    this.attitude = 'MUST · 必须拿满',
+    this.scoreTag = '满分 3分',
+    this.highFreqConcepts = const ['牛顿第二定律', '板块运动', '摩擦力'],
+    this.weakModels = const ['板块运动 L1'],
+    this.weakModelOutline = const ['牛顿第二定律应用 L3'],
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Attitude badge + score tag
             Wrap(
               spacing: 8,
               runSpacing: 8,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                _attitudeBadge(),
-                _grayTag('满分 3分'),
+                _attitudeBadge(attitude),
+                _grayTag(scoreTag),
               ],
             ),
             const SizedBox(height: 14),
-            // 高频考点
-            const Text('高频考点',
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            Text('高频考点', style: AppTheme.label(size: 12)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [
-                _blueTag('牛顿第二定律'),
-                _blueTag('板块运动'),
-                _blueTag('摩擦力'),
+                for (final c in highFreqConcepts) _blueTag(c),
               ],
             ),
             const SizedBox(height: 14),
-            // 薄弱模型
-            const Text('薄弱模型',
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            Text('薄弱模型', style: AppTheme.label(size: 12)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [
-                _darkTag('板块运动 L1'),
-                _outlineTag('牛顿第二定律应用 L3'),
+                for (final m in weakModels) _darkTag(m),
+                for (final m in weakModelOutline) _outlineTag(m),
               ],
             ),
           ],
@@ -60,20 +63,14 @@ class ExamAnalysisWidget extends StatelessWidget {
     );
   }
 
-  static Widget _attitudeBadge() {
+  static Widget _attitudeBadge(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: AppTheme.danger,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: const Text(
-        'MUST · 必须拿满',
-        style: TextStyle(
-          fontSize: 12, fontWeight: FontWeight.w700,
-          color: Colors.white,
-        ),
-      ),
+      child: Text(text, style: AppTheme.label(size: 12, color: Colors.white)),
     );
   }
 
@@ -81,11 +78,10 @@ class ExamAnalysisWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: AppTheme.background,
-        borderRadius: BorderRadius.circular(6),
+        color: AppTheme.canvas,
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: Text(text,
-          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+      child: Text(text, style: AppTheme.label(size: 12)),
     );
   }
 
@@ -93,11 +89,10 @@ class ExamAnalysisWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: AppTheme.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
+        color: AppTheme.accent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: Text(text,
-          style: const TextStyle(fontSize: 12, color: AppTheme.primary, fontWeight: FontWeight.w500)),
+      child: Text(text, style: AppTheme.label(size: 12, color: AppTheme.accent)),
     );
   }
 
@@ -105,11 +100,10 @@ class ExamAnalysisWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFF3A3A3C),
-        borderRadius: BorderRadius.circular(6),
+        color: AppTheme.foreground,
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: Text(text,
-          style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500)),
+      child: Text(text, style: AppTheme.label(size: 12, color: Colors.white)),
     );
   }
 
@@ -118,10 +112,9 @@ class ExamAnalysisWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         border: Border.all(color: AppTheme.divider),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: Text(text,
-          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+      child: Text(text, style: AppTheme.label(size: 12)),
     );
   }
 }

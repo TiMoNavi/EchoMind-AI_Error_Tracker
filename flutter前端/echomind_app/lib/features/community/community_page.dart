@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/widgets/page_shell.dart';
+import 'package:echomind_app/shared/widgets/clay_background_blobs.dart';
 import 'package:echomind_app/features/community/widgets/top_frame_and_tabs_widget.dart';
 import 'package:echomind_app/features/community/widgets/board_my_requests_widget.dart';
 import 'package:echomind_app/features/community/widgets/board_feature_boost_widget.dart';
@@ -25,14 +26,20 @@ class _CommunityPageState extends State<CommunityPage> {
   Widget build(BuildContext context) {
     return PageShell(
       tabIndex: 3,
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 16),
+      body: Stack(
         children: [
-          TopFrameAndTabsWidget(
-            activeTab: _tab,
-            onTabChanged: (i) => setState(() => _tab = i),
+          const ClayBackgroundBlobs(),
+          ListView(
+            clipBehavior: Clip.none,
+            padding: const EdgeInsets.only(bottom: 40),
+            children: [
+              TopFrameAndTabsWidget(
+                activeTab: _tab,
+                onTabChanged: (i) => setState(() => _tab = i),
+              ),
+              _boards[_tab],
+            ],
           ),
-          _boards[_tab],
         ],
       ),
     );

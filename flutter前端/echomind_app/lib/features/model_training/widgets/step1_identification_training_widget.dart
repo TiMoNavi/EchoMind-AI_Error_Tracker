@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class Step1IdentificationTrainingWidget extends StatelessWidget {
   final int stepIndex;
@@ -27,33 +28,25 @@ class Step1IdentificationTrainingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-      child: Container(
-        width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+      child: ClayCard(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'STEP ${stepIndex + 1} / $_total · ${_titles[stepIndex]}',
-              style: const TextStyle(
-                fontSize: 12, color: AppTheme.primary,
-                fontWeight: FontWeight.w600, letterSpacing: 0.5,
-              ),
+              style: AppTheme.label(size: 12, color: AppTheme.accent),
             ),
             const SizedBox(height: 10),
             Text(
               _headlines[stepIndex],
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              style: AppTheme.heading(size: 18),
             ),
             const SizedBox(height: 6),
             Text(
               _descs[stepIndex],
-              style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary, height: 1.5),
+              style: AppTheme.body(size: 14),
             ),
           ],
         ),

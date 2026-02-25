@@ -11,9 +11,10 @@ class GlobalModelPage extends StatelessWidget {
     return PageShell(
       tabIndex: 1,
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 32),
         children: const [
           TopFrameWidget(),
+          SizedBox(height: 4),
           ModelTreeWidget(),
         ],
       ),

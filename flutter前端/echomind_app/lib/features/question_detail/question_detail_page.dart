@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_background_blobs.dart';
 import 'package:echomind_app/features/question_detail/widgets/top_frame_widget.dart';
 import 'package:echomind_app/features/question_detail/widgets/question_content_widget.dart';
 import 'package:echomind_app/features/question_detail/widgets/answer_result_widget.dart';
@@ -12,22 +13,28 @@ class QuestionDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.canvas,
       body: SafeArea(
         child: Column(
           children: [
             const TopFrameWidget(),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(bottom: 16),
-                children: const [
-                  QuestionContentWidget(),
-                  SizedBox(height: 12),
-                  AnswerResultWidget(),
-                  SizedBox(height: 12),
-                  QuestionRelationsWidget(),
-                  SizedBox(height: 12),
-                  QuestionSourceWidget(),
+              child: Stack(
+                children: [
+                  const ClayBackgroundBlobs(),
+                  ListView(
+                    clipBehavior: Clip.none,
+                    padding: const EdgeInsets.only(bottom: 24),
+                    children: const [
+                      QuestionContentWidget(),
+                      SizedBox(height: 16),
+                      AnswerResultWidget(),
+                      SizedBox(height: 20),
+                      QuestionRelationsWidget(),
+                      SizedBox(height: 20),
+                      QuestionSourceWidget(),
+                    ],
+                  ),
                 ],
               ),
             ),

@@ -1,38 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UserInfoCardWidget extends StatelessWidget {
-  const UserInfoCardWidget({super.key});
+  final String name;
+  final String initial;
+  final String subtitle;
+  final List<String> tags;
+
+  const UserInfoCardWidget({
+    super.key,
+    this.name = '同学 S',
+    this.initial = 'S',
+    this.subtitle = '天津 -- 高三 -- 物理+数学',
+    this.tags = const ['完整订阅', '2026.3.15到期'],
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: AppTheme.gradientHero,
+          borderRadius: BorderRadius.circular(AppTheme.radiusHero),
+          boxShadow: AppTheme.shadowClayCard,
+        ),
         child: Row(
           children: [
-            Container(
-              width: 68, height: 68,
-              decoration: const BoxDecoration(color: AppTheme.background, shape: BoxShape.circle),
-              alignment: Alignment.center,
-              child: const Text('S', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppTheme.textSecondary)),
-            ),
+            _avatarOrb(),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('同学 S', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+                  Text(name, style: AppTheme.heading(size: 22)),
                   const SizedBox(height: 4),
-                  const Text('天津 -- 高三 -- 物理+数学', style: TextStyle(fontSize: 15, color: AppTheme.textSecondary)),
+                  Text(subtitle, style: AppTheme.label(size: 13)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 6,
                     children: [
-                      _tag('完整订阅', dark: true),
-                      _tag('2026.3.15到期'),
+                      for (int i = 0; i < tags.length; i++)
+                        _tag(tags[i], accent: i == 0),
                     ],
                   ),
                 ],
@@ -44,14 +55,47 @@ class UserInfoCardWidget extends StatelessWidget {
     );
   }
 
-  static Widget _tag(String text, {bool dark = false}) {
+  Widget _avatarOrb() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      width: 64,
+      height: 64,
       decoration: BoxDecoration(
-        color: dark ? AppTheme.textPrimary : AppTheme.background,
-        borderRadius: BorderRadius.circular(4),
+        gradient: AppTheme.gradientPrimary,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.accent.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Text(text, style: TextStyle(fontSize: 13, color: dark ? Colors.white : AppTheme.textSecondary)),
+      alignment: Alignment.center,
+      child: Text(
+        initial,
+        style: GoogleFonts.nunito(
+          fontSize: 28,
+          fontWeight: FontWeight.w900,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  static Widget _tag(String text, {bool accent = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: accent ? AppTheme.accent : Colors.white.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+      ),
+      child: Text(
+        text,
+        style: AppTheme.label(
+          size: 12,
+          color: accent ? Colors.white : AppTheme.muted,
+        ),
+      ),
     );
   }
 }

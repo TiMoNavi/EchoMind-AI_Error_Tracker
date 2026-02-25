@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class ConceptTestRecordsWidget extends StatelessWidget {
-  const ConceptTestRecordsWidget({super.key});
+  final List<ConceptTestRecord> records;
 
-  static const _items = [
-    (name: '检测 #3', desc: '2月9日 · 未通过 · 条件判断错误', passed: false),
-    (name: '检测 #2', desc: '2月5日 · 通过 · 全部正确', passed: true),
-    (name: '检测 #1', desc: '1月28日 · 通过 · 2/3正确', passed: true),
-  ];
+  const ConceptTestRecordsWidget({
+    super.key,
+    this.records = const [
+      ConceptTestRecord(name: '检测 #3', desc: '2月9日 · 未通过 · 条件判断错误', passed: false),
+      ConceptTestRecord(name: '检测 #2', desc: '2月5日 · 通过 · 全部正确', passed: true),
+      ConceptTestRecord(name: '检测 #1', desc: '1月28日 · 通过 · 2/3正确', passed: true),
+    ],
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('概念检测记录',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          Text('概念检测记录', style: AppTheme.heading(size: 18)),
           const SizedBox(height: 10),
           _listGroup(),
         ],
@@ -26,51 +29,60 @@ class ConceptTestRecordsWidget extends StatelessWidget {
     );
   }
 
-  static Widget _listGroup() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
-      child: Column(
-        children: [
-          for (var i = 0; i < _items.length; i++) ...[
-            if (i > 0)
-              const Divider(height: 1, indent: 14, color: AppTheme.divider),
-            _buildItem(_items[i]),
-          ],
+  Widget _listGroup() {
+    return Column(
+      children: [
+        for (var i = 0; i < records.length; i++) ...[
+          if (i > 0) const SizedBox(height: 10),
+          _buildItem(records[i]),
         ],
-      ),
+      ],
     );
   }
 
-  static Widget _buildItem(dynamic item) {
-    final bool passed = item.passed as bool;
-    return Padding(
+  static Widget _buildItem(ConceptTestRecord item) {
+    final Color statusColor = item.passed ? AppTheme.success : AppTheme.danger;
+    return ClayCard(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              color: statusColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            ),
+            child: Icon(
+              item.passed ? Icons.check_rounded : Icons.close_rounded,
+              size: 16, color: statusColor,
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.name as String,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                Text(item.name,
+                    style: AppTheme.body(size: 14, weight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text(item.desc as String,
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                Text(item.desc, style: AppTheme.label(size: 12)),
               ],
-            ),
-          ),
-          Text(
-            passed ? 'OK' : 'X',
-            style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w700,
-              color: passed ? AppTheme.accent : const Color(0xFF636366),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class ConceptTestRecord {
+  final String name;
+  final String desc;
+  final bool passed;
+
+  const ConceptTestRecord({
+    required this.name,
+    required this.desc,
+    required this.passed,
+  });
 }

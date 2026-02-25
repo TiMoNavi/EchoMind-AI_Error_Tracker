@@ -1,52 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class CardCategoryListWidget extends StatelessWidget {
-  const CardCategoryListWidget({super.key});
+  final List<CardCategory> categories;
 
-  static const _categories = [
-    (tag: '识别', tagBg: Color(0xFF1C1C1E), tagFg: Colors.white, name: '识别卡', desc: '8张 · 来自模型训练 Step1', review: '3张待复习'),
-    (tag: '决策', tagBg: Color(0xFF48484A), tagFg: Colors.white, name: '决策卡', desc: '6张 · 来自模型训练 Step2', review: '2张待复习'),
-    (tag: '步骤', tagBg: Color(0xFF8E8E93), tagFg: Colors.white, name: '步骤卡', desc: '5张 · 来自模型训练 Step3', review: '1张待复习'),
-    (tag: '陷阱', tagBg: Color(0xFF3A3A3C), tagFg: Colors.white, name: '陷阱卡', desc: '4张 · 来自模型训练 Step4', review: '0'),
-    (tag: '公式', tagBg: Color(0xFF007AFF), tagFg: Colors.white, name: '公式卡', desc: '10张 · 通用', review: '4张待复习'),
-    (tag: '概念', tagBg: Color(0xFFBBDEFB), tagFg: Color(0xFF1565C0), name: '概念卡', desc: '9张 · 来自知识点学习', review: '2张待复习'),
-    (tag: '条件', tagBg: Color(0xFFE3F2FD), tagFg: Color(0xFF1976D2), name: '条件卡', desc: '4张 · 来自知识点学习', review: '0'),
-    (tag: '辨析', tagBg: Color(0xFFF5F9FF), tagFg: Color(0xFF2196F3), name: '辨析卡', desc: '2张 · 来自易混对比', review: '0'),
-  ];
+  const CardCategoryListWidget({
+    super.key,
+    this.categories = const [
+      CardCategory(tag: '识别', tagBg: Color(0xFF1C1C1E), tagFg: Colors.white, name: '识别卡', desc: '8张 · 来自模型训练 Step1', review: '3张待复习'),
+      CardCategory(tag: '决策', tagBg: Color(0xFF48484A), tagFg: Colors.white, name: '决策卡', desc: '6张 · 来自模型训练 Step2', review: '2张待复习'),
+      CardCategory(tag: '步骤', tagBg: Color(0xFF8E8E93), tagFg: Colors.white, name: '步骤卡', desc: '5张 · 来自模型训练 Step3', review: '1张待复习'),
+      CardCategory(tag: '陷阱', tagBg: Color(0xFF3A3A3C), tagFg: Colors.white, name: '陷阱卡', desc: '4张 · 来自模型训练 Step4', review: '0'),
+      CardCategory(tag: '公式', tagBg: Color(0xFF007AFF), tagFg: Colors.white, name: '公式卡', desc: '10张 · 通用', review: '4张待复习'),
+      CardCategory(tag: '概念', tagBg: Color(0xFFBBDEFB), tagFg: Color(0xFF1565C0), name: '概念卡', desc: '9张 · 来自知识点学习', review: '2张待复习'),
+      CardCategory(tag: '条件', tagBg: Color(0xFFE3F2FD), tagFg: Color(0xFF1976D2), name: '条件卡', desc: '4张 · 来自知识点学习', review: '0'),
+      CardCategory(tag: '辨析', tagBg: Color(0xFFF5F9FF), tagFg: Color(0xFF2196F3), name: '辨析卡', desc: '2张 · 来自易混对比', review: '0'),
+    ],
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Expanded(
-                child: Text('卡片分类', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              Expanded(
+                child: Text('卡片分类', style: AppTheme.heading(size: 18)),
               ),
               GestureDetector(
                 onTap: () {},
-                child: const Text('管理', style: TextStyle(fontSize: 14, color: AppTheme.primary)),
+                child: Text('管理', style: AppTheme.label(size: 14, color: AppTheme.accent)),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: AppTheme.surface,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            ),
-            child: Column(
-              children: [
-                for (var i = 0; i < _categories.length; i++) ...[
-                  if (i > 0) const Divider(height: 1, indent: 56, endIndent: 0, color: AppTheme.divider),
-                  _CategoryRow(c: _categories[i]),
-                ],
+          Column(
+            children: [
+              for (var i = 0; i < categories.length; i++) ...[
+                if (i > 0) const SizedBox(height: 10),
+                _CategoryRow(c: categories[i]),
               ],
-            ),
+            ],
           ),
         ],
       ),
@@ -55,45 +53,65 @@ class CardCategoryListWidget extends StatelessWidget {
 }
 
 class _CategoryRow extends StatelessWidget {
-  final dynamic c;
+  final CardCategory c;
   const _CategoryRow({required this.c});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ClayCard(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 36, height: 36,
             decoration: BoxDecoration(
-              color: c.tagBg as Color,
-              borderRadius: BorderRadius.circular(8),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                colors: [c.tagBg.withValues(alpha: 0.8), c.tagBg],
+              ),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              boxShadow: [
+                BoxShadow(
+                  color: c.tagBg.withValues(alpha: 0.3),
+                  blurRadius: 8, offset: const Offset(0, 3)),
+              ],
             ),
             alignment: Alignment.center,
-            child: Text(
-              c.tag as String,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.tagFg as Color),
-            ),
+            child: Text(c.tag,
+                style: AppTheme.label(size: 11, color: c.tagFg)),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(c.name as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                Text(c.name, style: AppTheme.body(size: 15, weight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text(c.desc as String, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                Text(c.desc, style: AppTheme.label(size: 12)),
               ],
             ),
           ),
-          Text(
-            c.review as String,
-            style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
-          ),
+          Text(c.review, style: AppTheme.label(size: 13)),
         ],
       ),
     );
   }
+}
+
+class CardCategory {
+  final String tag;
+  final Color tagBg;
+  final Color tagFg;
+  final String name;
+  final String desc;
+  final String review;
+
+  const CardCategory({
+    required this.tag,
+    required this.tagBg,
+    required this.tagFg,
+    required this.name,
+    required this.desc,
+    required this.review,
+  });
 }

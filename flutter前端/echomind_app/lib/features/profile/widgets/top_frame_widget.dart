@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
 
 class TopFrameWidget extends StatelessWidget {
   const TopFrameWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text('我的', style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Text('我的', style: AppTheme.heading(size: 28)),
     );
   }
 }

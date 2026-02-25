@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class WeeklyProgressWidget extends StatelessWidget {
   const WeeklyProgressWidget({super.key});
@@ -7,14 +8,12 @@ class WeeklyProgressWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('本周进展',
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 10),
+          Text('本周进展', style: AppTheme.heading(size: 18)),
+          const SizedBox(height: 12),
           _listGroup(),
         ],
       ),
@@ -22,59 +21,56 @@ class WeeklyProgressWidget extends StatelessWidget {
   }
 
   static Widget _listGroup() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
-      child: Column(
-        children: [
-          _item('匀变速直线运动', 'L3 --> L4 -- 做对过',
-              const Color(0xFF34C759), 'UP', true),
-          const Divider(height: 1, indent: 28,
-              color: AppTheme.divider),
-          _item('牛顿第二定律应用', 'L2 --> L3 -- 执行正确一次',
-              const Color(0xFFFFCC00), 'UP', true),
-          const Divider(height: 1, indent: 28,
-              color: AppTheme.divider),
-          _item('板块运动', 'L1 --> L1 -- 仍在建模层卡住',
-              const Color(0xFFFF3B30), '--', false),
-        ],
-      ),
+    return Column(
+      children: [
+        _item('匀变速直线运动', 'L3 --> L4 -- 做对过',
+            AppTheme.success, 'UP', true),
+        const SizedBox(height: 10),
+        _item('牛顿第二定律应用', 'L2 --> L3 -- 执行正确一次',
+            AppTheme.warning, 'UP', true),
+        const SizedBox(height: 10),
+        _item('板块运动', 'L1 --> L1 -- 仍在建模层卡住',
+            AppTheme.danger, '--', false),
+      ],
     );
   }
 
   static Widget _item(String name, String desc, Color dotColor,
       String status, bool isUp) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    return ClayCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
           Container(
-            width: 8, height: 8,
+            width: 10, height: 10,
             decoration: BoxDecoration(
-              color: dotColor, shape: BoxShape.circle,
+              color: dotColor,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: dotColor.withValues(alpha: 0.4),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w500)),
-                const SizedBox(height: 2),
-                Text(desc, style: const TextStyle(
-                    fontSize: 12, color: AppTheme.textSecondary)),
+                Text(name, style: AppTheme.body(size: 14, weight: FontWeight.w600)),
+                const SizedBox(height: 3),
+                Text(desc, style: AppTheme.label(size: 12)),
               ],
             ),
           ),
           Text(status,
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: isUp
-                      ? AppTheme.accent
-                      : const Color(0xFF636366))),
+              style: AppTheme.label(
+                size: 13,
+                color: isUp ? AppTheme.accent : AppTheme.muted,
+              )),
         ],
       ),
     );

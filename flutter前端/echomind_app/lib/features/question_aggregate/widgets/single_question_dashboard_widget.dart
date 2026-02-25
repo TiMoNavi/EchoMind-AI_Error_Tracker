@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SingleQuestionDashboardWidget extends StatelessWidget {
-  const SingleQuestionDashboardWidget({super.key});
+  final String totalAttempts;
+  final String accuracy;
+  final String predictedScore;
+
+  const SingleQuestionDashboardWidget({
+    super.key,
+    this.totalAttempts = '6',
+    this.accuracy = '33%',
+    this.predictedScore = '2/3',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
-        child: const Row(
+        child: Row(
           children: [
-            Expanded(child: _Stat(value: '6', label: '累计做题')),
-            Expanded(child: _Stat(value: '33%', label: '正确率')),
-            Expanded(child: _Stat(value: '2/3', label: '预测得分', valueColor: AppTheme.accent)),
+            Expanded(child: _Stat(value: totalAttempts, label: '累计做题')),
+            Expanded(child: _Stat(value: accuracy, label: '正确率')),
+            Expanded(child: _Stat(value: predictedScore, label: '预测得分', valueColor: AppTheme.accent)),
           ],
         ),
       ),
@@ -35,12 +42,12 @@ class _Stat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: TextStyle(
-          fontSize: 30, fontWeight: FontWeight.w900,
-          color: valueColor,
+        Text(value, style: GoogleFonts.nunito(
+          fontSize: 28, fontWeight: FontWeight.w900,
+          color: valueColor ?? AppTheme.foreground,
         )),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+        Text(label, style: AppTheme.label(size: 11)),
       ],
     );
   }

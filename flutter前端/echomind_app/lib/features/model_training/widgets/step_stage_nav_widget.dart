@@ -11,9 +11,9 @@ class StepStageNavWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppTheme.divider, width: 0.5)),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFEBF5),
+        boxShadow: AppTheme.shadowClayPressed,
       ),
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
       child: Column(
@@ -26,7 +26,7 @@ class StepStageNavWidget extends StatelessWidget {
                   Expanded(
                     child: Container(
                       height: 2,
-                      color: i <= currentStep ? AppTheme.primary : const Color(0xFFE0E0E0),
+                      color: i <= currentStep ? AppTheme.accent : const Color(0xFFE0E0E0),
                     ),
                   ),
                 GestureDetector(
@@ -35,7 +35,7 @@ class StepStageNavWidget extends StatelessWidget {
                     width: 28, height: 28,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: i <= currentStep ? AppTheme.primary : const Color(0xFFE0E0E0),
+                      color: i <= currentStep ? AppTheme.accent : const Color(0xFFE0E0E0),
                     ),
                     alignment: Alignment.center,
                     child: Text('${i + 1}',
@@ -63,7 +63,7 @@ class StepStageNavWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 8,
-                          color: i == currentStep ? AppTheme.primary : AppTheme.textSecondary,
+                          color: i == currentStep ? AppTheme.accent : AppTheme.muted,
                           fontWeight: i == currentStep ? FontWeight.w600 : FontWeight.normal,
                         )),
                   ),

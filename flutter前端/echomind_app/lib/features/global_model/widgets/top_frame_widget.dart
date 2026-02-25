@@ -15,53 +15,126 @@ class TopFrameWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Text('全局知识', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-        ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: AppTheme.background,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              children: [
-                for (var i = 0; i < _tabs.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 4),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: _routes[i] != null ? () => context.go(_routes[i]!) : null,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: i == _activeIndex ? Colors.white : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: i == _activeIndex
-                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 4, offset: const Offset(0, 1))]
-                              : null,
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          _tabs[i],
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: i == _activeIndex ? FontWeight.w600 : FontWeight.w500,
-                            color: i == _activeIndex ? AppTheme.textPrimary : AppTheme.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+          child: Text(
+            '全局知识',
+            style: AppTheme.heading(size: 34, weight: FontWeight.w900),
           ),
         ),
-        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: _ClayTabBar(
+            tabs: _tabs,
+            activeIndex: _activeIndex,
+            onTap: (i) {
+              if (_routes[i] != null) {
+                context.go(_routes[i]!);
+              }
+            },
+          ),
+        ),
+        const SizedBox(height: 14),
       ],
+    );
+  }
+}
+
+// ─── Clay Tab Bar ───
+class _ClayTabBar extends StatelessWidget {
+  final List<String> tabs;
+  final int activeIndex;
+  final ValueChanged<int> onTap;
+
+  const _ClayTabBar({
+    required this.tabs,
+    required this.activeIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: AppTheme.canvas,
+        borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+        boxShadow: const [
+          BoxShadow(
+            offset: Offset(4, 4),
+            blurRadius: 10,
+            color: Color.fromRGBO(160, 150, 180, 0.15),
+          ),
+          BoxShadow(
+            offset: Offset(-3, -3),
+            blurRadius: 8,
+            color: Color.fromRGBO(255, 255, 255, 0.7),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          for (var i = 0; i < tabs.length; i++) ...[
+            if (i > 0) const SizedBox(width: 4),
+            Expanded(child: _ClayTab(
+              label: tabs[i],
+              isActive: i == activeIndex,
+              onTap: () => onTap(i),
+            )),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ClayTab extends StatelessWidget {
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _ClayTab({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          boxShadow: isActive
+              ? const [
+                  BoxShadow(
+                    offset: Offset(4, 4),
+                    blurRadius: 10,
+                    color: Color.fromRGBO(139, 92, 246, 0.12),
+                  ),
+                  BoxShadow(
+                    offset: Offset(-3, -3),
+                    blurRadius: 8,
+                    color: Color.fromRGBO(255, 255, 255, 0.9),
+                  ),
+                ]
+              : null,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: AppTheme.label(
+            size: 17,
+            color: isActive ? AppTheme.accent : AppTheme.muted,
+          ).copyWith(
+            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      ),
     );
   }
 }

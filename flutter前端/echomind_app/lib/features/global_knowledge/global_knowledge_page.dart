@@ -11,9 +11,10 @@ class GlobalKnowledgePage extends StatelessWidget {
     return PageShell(
       tabIndex: 1,
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 32),
         children: [
           TopFrameWidget(activeTab: 0, onTabChanged: (_) {}),
+          const SizedBox(height: 4),
           const KnowledgeTreeWidget(),
         ],
       ),

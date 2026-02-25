@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 
 class TopFrameWidget extends StatelessWidget {
@@ -7,16 +8,16 @@ class TopFrameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
+      padding: const EdgeInsets.fromLTRB(4, 8, 20, 4),
       child: Row(
         children: [
           IconButton(
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
-          const Text('周复盘', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          Text('周复盘', style: AppTheme.heading(size: 20)),
           const Spacer(),
-          const Text('第6周', style: TextStyle(fontSize: 14, color: Color(0xFF8E8E93))),
+          Text('第6周', style: AppTheme.label(size: 13)),
         ],
       ),
     );

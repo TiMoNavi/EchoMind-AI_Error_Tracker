@@ -1,63 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
 class ReviewDashboardWidget extends StatelessWidget {
-  const ReviewDashboardWidget({super.key});
+  final String todayCount;
+  final String retentionRate;
+  final String totalReviewed;
+  final String totalCards;
+
+  const ReviewDashboardWidget({
+    super.key,
+    this.todayCount = '12',
+    this.retentionRate = '87%',
+    this.totalReviewed = '156',
+    this.totalCards = '48',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          // Main review card
-          Container(
-            width: double.infinity,
+          ClayCard(
             padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
-            decoration: BoxDecoration(
-              color: AppTheme.surface,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            ),
             child: Column(
               children: [
-                const Text(
-                  '今日待复习',
-                  style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
-                ),
+                Text('今日待复习', style: AppTheme.label(size: 14)),
                 const SizedBox(height: 8),
-                const Text(
-                  '12',
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primary,
-                    fontFeatures: [FontFeature.tabularFigures()],
+                Text(
+                  todayCount,
+                  style: GoogleFonts.nunito(
+                    fontSize: 48, fontWeight: FontWeight.w900,
+                    color: AppTheme.accent,
                   ),
                 ),
-                const Text(
-                  '张卡片',
-                  style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
-                ),
+                Text('张卡片', style: AppTheme.label(size: 14)),
                 const SizedBox(height: 20),
-                SizedBox(
+                Container(
                   width: double.infinity,
-                  height: 44,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.gradientPrimary,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                    boxShadow: AppTheme.shadowClayButton,
+                  ),
                   child: ElevatedButton(
                     onPressed: () => context.push(AppRoutes.flashcardReview),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primary,
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      '开始复习',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
+                    child: Text('开始复习',
+                        style: GoogleFonts.nunito(
+                            fontSize: 16, fontWeight: FontWeight.w700)),
                   ),
                 ),
               ],
@@ -65,13 +69,13 @@ class ReviewDashboardWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           // Stats row
-          const Row(
+          Row(
             children: [
-              Expanded(child: _StatCard(value: '87%', label: '本周记住率')),
-              SizedBox(width: 8),
-              Expanded(child: _StatCard(value: '156', label: '累计复习')),
-              SizedBox(width: 8),
-              Expanded(child: _StatCard(value: '48', label: '总卡片数')),
+              Expanded(child: _StatCard(value: retentionRate, label: '本周记住率')),
+              const SizedBox(width: 8),
+              Expanded(child: _StatCard(value: totalReviewed, label: '累计复习')),
+              const SizedBox(width: 8),
+              Expanded(child: _StatCard(value: totalCards, label: '总卡片数')),
             ],
           ),
         ],
@@ -87,27 +91,19 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ClayCard(
       padding: const EdgeInsets.symmetric(vertical: 14),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
       child: Column(
         children: [
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFeatures: [FontFeature.tabularFigures()],
+            style: GoogleFonts.nunito(
+              fontSize: 22, fontWeight: FontWeight.w900,
+              color: AppTheme.accent,
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-          ),
+          Text(label, style: AppTheme.label(size: 12)),
         ],
       ),
     );
