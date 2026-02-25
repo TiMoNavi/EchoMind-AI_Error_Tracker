@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
-  static const _baseUrl = 'http://localhost:8000/api';
+  static const _baseUrl = 'http://8.130.16.212:8001/api';
   static const _tokenKey = 'auth_token';
 
   static final ApiClient _instance = ApiClient._();
