@@ -61,7 +61,7 @@ class MasteryDashboardWidget extends ConsumerWidget {
           SizedBox(
             width: double.infinity, height: 40,
             child: ElevatedButton(
-              onPressed: () => context.push(AppRoutes.knowledgeLearning),
+              onPressed: () => context.push('${AppRoutes.knowledgeLearning}?kpId=$kpId'),
               style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)), elevation: 0),
               child: const Text('开始学习', style: TextStyle(fontWeight: FontWeight.w600)),
             ),

@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
-import 'package:go_router/go_router.dart';
-import 'package:echomind_app/app/app_routes.dart';
 import 'package:echomind_app/providers/prediction_provider.dart';
 
 class ScorePathTableWidget extends ConsumerWidget {
   const ScorePathTableWidget({super.key});
-
-  static const _mockItems = [
-    ScorePathItem(questionLabel: '第5题', score: '6分', modelName: '受力分析', modelId: 'mock', priority: '高'),
-    ScorePathItem(questionLabel: '第12题', score: '4分', modelName: '运动学', modelId: 'mock', priority: '中'),
-    ScorePathItem(questionLabel: '第8题', score: '3分', modelName: '能量守恒', modelId: 'mock', priority: '中'),
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +12,7 @@ class ScorePathTableWidget extends ConsumerWidget {
 
     final items = prediction.whenOrNull(
       data: (d) => d.scorePath.isNotEmpty ? d.scorePath : null,
-    ) ?? _mockItems;
+    ) ?? const <ScorePathItem>[];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -34,7 +26,7 @@ class ScorePathTableWidget extends ConsumerWidget {
             child: Column(children: [
               _header(),
               for (var i = 0; i < items.length; i++)
-                _row(context, items[i], i < items.length - 1),
+                _row(items[i], i < items.length - 1),
             ]),
           ),
         ],
@@ -47,30 +39,31 @@ class ScorePathTableWidget extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppTheme.divider, width: 0.5))),
       child: const Row(children: [
-        Expanded(flex: 2, child: Text('题号', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
-        Expanded(flex: 2, child: Text('可提分', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
-        Expanded(flex: 3, child: Text('关联模型', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
-        Expanded(flex: 1, child: Text('优先级', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
+        Expanded(flex: 3, child: Text('能力维度', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
+        Expanded(flex: 2, child: Text('当前', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
+        Expanded(flex: 2, child: Text('目标', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
+        Expanded(flex: 2, child: Text('差距', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
       ]),
     );
   }
 
-  Widget _row(BuildContext context, ScorePathItem item, bool hasBorder) {
-    return GestureDetector(
-      onTap: () => context.push(AppRoutes.modelDetailPath(item.modelId)),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: hasBorder ? const BoxDecoration(border: Border(bottom: BorderSide(color: AppTheme.divider, width: 0.5))) : null,
-        child: Row(children: [
-          Expanded(flex: 2, child: Text(item.questionLabel, style: const TextStyle(fontSize: 13))),
-          Expanded(flex: 2, child: Text(item.score, style: const TextStyle(fontSize: 13, color: AppTheme.primary))),
-          Expanded(flex: 3, child: Text(item.modelName, style: const TextStyle(fontSize: 13))),
-          Expanded(
-            flex: 1,
-            child: Text(item.priority, style: TextStyle(fontSize: 12, color: item.priority == '高' ? AppTheme.danger : AppTheme.textSecondary)),
+  Widget _row(ScorePathItem item, bool hasBorder) {
+    final gap = item.gap;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: hasBorder ? const BoxDecoration(border: Border(bottom: BorderSide(color: AppTheme.divider, width: 0.5))) : null,
+      child: Row(children: [
+        Expanded(flex: 3, child: Text(item.label, style: const TextStyle(fontSize: 13))),
+        Expanded(flex: 2, child: Text('${(item.current * 100).toInt()}%', style: const TextStyle(fontSize: 13, color: AppTheme.primary))),
+        Expanded(flex: 2, child: Text('${(item.target * 100).toInt()}%', style: const TextStyle(fontSize: 13))),
+        Expanded(
+          flex: 2,
+          child: Text(
+            gap > 0 ? '-${(gap * 100).toInt()}%' : '✅',
+            style: TextStyle(fontSize: 12, color: gap > 0 ? AppTheme.danger : AppTheme.success),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }

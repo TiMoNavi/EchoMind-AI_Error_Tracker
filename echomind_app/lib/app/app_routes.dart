@@ -29,4 +29,15 @@ class AppRoutes {
   static String knowledgeDetailPath(String id) => '/knowledge-detail/$id';
   static String modelDetailPath(String id) => '/model-detail/$id';
   static String questionDetailPath(String id) => '/question-detail/$id';
+  static String aiDiagnosisPath({String? questionId}) =>
+      questionId != null ? '/ai-diagnosis?questionId=$questionId' : '/ai-diagnosis';
+  static String modelTrainingPath({
+    required String modelId,
+    String source = 'self_study',
+    String? questionId,
+  }) {
+    final params = <String>['modelId=$modelId', 'source=$source'];
+    if (questionId != null) params.add('questionId=$questionId');
+    return '/model-training?${params.join('&')}';
+  }
 }

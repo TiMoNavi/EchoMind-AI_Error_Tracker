@@ -51,20 +51,89 @@ TEMPLATES = [
     {
         "id": "tianjin_physics_70",
         "region_id": "tianjin", "subject": "physics", "target_score": 70, "total_score": 100,
-        "exam_structure": {"sections": [
-            {"type": "choice", "numbers": list(range(1, 9)), "score_each": 4},
-            {"type": "fill", "numbers": [9, 10], "score_each": 6},
-            {"type": "big", "numbers": [11, 12, 13], "score_each": 16},
-        ]},
-        "question_strategies": {"strategies": [
-            {"number": 1, "priority": "must", "model_ids": ["model_kinematics"]},
-            {"number": 5, "priority": "must", "model_ids": ["model_newton_app"]},
-            {"number": 8, "priority": "skip", "model_ids": ["model_charged_particle"]},
-        ]},
-        "diagnosis_path": {"tiers": [
-            {"tier": 1, "model_ids": ["model_newton_app", "model_kinematics", "model_energy_method"]},
-            {"tier": 2, "model_ids": ["model_plate_motion", "model_coulomb_balance"]},
-        ]},
+        "key_message": "70分=选择题最多错2个+大题前两道拿满，你做得到",
+        "vs_lower": "比60分多要求：大题第一题全拿+选择多对2道",
+        "vs_higher": "比80分允许放弃：大题第三题、多选最后一道",
+        "exam_structure": [
+            {
+                "section_name": "选择题（单选）",
+                "questions": [
+                    {"question_number": i, "max_score": 3, "difficulty": "easy" if i <= 4 else "medium",
+                     "typical_models": ["model_kinematics"] if i <= 2 else ["model_newton_app"],
+                     "typical_kps": ["kp_uniform_motion"] if i <= 2 else ["kp_newton_second"]}
+                    for i in range(1, 7)
+                ],
+            },
+            {
+                "section_name": "选择题（多选）",
+                "questions": [
+                    {"question_number": i, "max_score": 3, "difficulty": "medium" if i == 7 else "hard",
+                     "typical_models": ["model_energy_method"], "typical_kps": ["kp_energy_conservation"]}
+                    for i in range(7, 9)
+                ],
+            },
+            {
+                "section_name": "实验题",
+                "questions": [
+                    {"question_number": 9, "max_score": 8, "difficulty": "medium",
+                     "typical_models": [], "typical_kps": ["kp_newton_second"]},
+                    {"question_number": 10, "max_score": 7, "difficulty": "medium",
+                     "typical_models": [], "typical_kps": ["kp_electric_field"]},
+                ],
+            },
+            {
+                "section_name": "计算题",
+                "questions": [
+                    {"question_number": 11, "max_score": 12, "difficulty": "medium",
+                     "typical_models": ["model_newton_app", "model_kinematics"],
+                     "typical_kps": ["kp_newton_second", "kp_uniform_motion"]},
+                    {"question_number": 12, "max_score": 14, "difficulty": "hard",
+                     "typical_models": ["model_energy_method", "model_momentum_collision"],
+                     "typical_kps": ["kp_energy_conservation", "kp_momentum"]},
+                    {"question_number": 13, "max_score": 18, "difficulty": "extreme",
+                     "typical_models": ["model_charged_particle", "model_plate_motion"],
+                     "typical_kps": ["kp_magnetic_force", "kp_newton_second"]},
+                ],
+            },
+            {
+                "section_name": "选做题",
+                "questions": [
+                    {"question_number": 14, "max_score": 15, "difficulty": "medium",
+                     "typical_models": ["model_energy_method"],
+                     "typical_kps": ["kp_energy_conservation"]},
+                ],
+            },
+        ],
+        "question_strategies": [
+            {"question_range": "选择1-6（单选）", "max_score": 18, "target_score": 18,
+             "attitude": "must", "note": "全对", "display_text": "这些你绝对能做到"},
+            {"question_range": "选择7-8（多选）", "max_score": 6, "target_score": 3,
+             "attitude": "try", "note": "稳选一半", "display_text": "多选题稳选一半"},
+            {"question_range": "实验题", "max_score": 15, "target_score": 10,
+             "attitude": "try", "note": "基础实验必拿", "display_text": "基础实验你能拿到"},
+            {"question_range": "大题1", "max_score": 12, "target_score": 12,
+             "attitude": "must", "note": "全拿", "display_text": "你有能力写出来"},
+            {"question_range": "大题2", "max_score": 14, "target_score": 10,
+             "attitude": "try", "note": "前两问必做", "display_text": "前两问争取拿满"},
+            {"question_range": "大题3", "max_score": 18, "target_score": 5,
+             "attitude": "skip", "note": "写已知+第一步", "display_text": "写出已知量就有分"},
+            {"question_range": "选做题", "max_score": 15, "target_score": 12,
+             "attitude": "must", "note": "选做题相对简单", "display_text": "选做题你一定能拿"},
+        ],
+        "diagnosis_path": [
+            {"tier": 1, "model_id": "model_newton_app", "score_impact": "12-18分",
+             "reason": "大题第一/二题核心", "skippable": False},
+            {"tier": 1, "model_id": "model_kinematics", "score_impact": "12分",
+             "reason": "大题第一题基础", "skippable": False},
+            {"tier": 1, "model_id": "model_energy_method", "score_impact": "14-15分",
+             "reason": "大题第二题+选做题", "skippable": False},
+            {"tier": 2, "model_id": "model_plate_motion", "score_impact": "6-12分",
+             "reason": "选择高频+大题可能", "skippable": False},
+            {"tier": 2, "model_id": "model_coulomb_balance", "score_impact": "3-6分",
+             "reason": "选择高频", "skippable": False},
+            {"tier": 3, "model_id": "model_charged_particle", "score_impact": "3-6分",
+             "reason": "大题第三题（可放弃）", "skippable": True},
+        ],
     },
 ]
 

@@ -8,26 +8,45 @@ import 'package:echomind_app/providers/prediction_provider.dart';
 class PriorityModelListWidget extends ConsumerWidget {
   const PriorityModelListWidget({super.key});
 
-  static const _mockItems = [
-    PriorityModel(modelId: 'mock', modelName: '受力分析', level: 3, description: '预计提分 6 分'),
-    PriorityModel(modelId: 'mock', modelName: '运动学', level: 2, description: '预计提分 4 分'),
-    PriorityModel(modelId: 'mock', modelName: '能量守恒', level: 2, description: '预计提分 3 分'),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prediction = ref.watch(predictionProvider);
 
-    final items = prediction.whenOrNull(
-      data: (d) => d.priorityModels.isNotEmpty ? d.priorityModels : null,
-    ) ?? _mockItems;
+    return prediction.when(
+      loading: () => const SizedBox(
+          height: 80, child: Center(child: CircularProgressIndicator())),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (d) => _buildList(context, d.priorityModels),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<PriorityModel> items) {
+    if (items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.surface,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          ),
+          child: const Row(children: [
+            Icon(Icons.info_outline, size: 18, color: AppTheme.textSecondary),
+            SizedBox(width: 8),
+            Text('上传更多题目后将生成训练建议',
+                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+          ]),
+        ),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('优先训练模型', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          const Text('优先训练模型',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           const SizedBox(height: 10),
           for (var i = 0; i < items.length; i++)
             _item(context, items[i], i < items.length - 1),

@@ -1,7 +1,7 @@
 """RegionalTemplate — 表6"""
 from datetime import datetime
 
-from sqlalchemy import String, Integer, DateTime, UniqueConstraint, func
+from sqlalchemy import String, Integer, Text, DateTime, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -20,6 +20,11 @@ class RegionalTemplate(Base):
     exam_structure: Mapped[dict] = mapped_column(JSONB, nullable=False)
     question_strategies: Mapped[dict] = mapped_column(JSONB, nullable=False)
     diagnosis_path: Mapped[dict] = mapped_column(JSONB, nullable=False)
+
+    # 分数档话术（v1.0.md Section 四十六）
+    key_message: Mapped[str | None] = mapped_column(Text)
+    vs_lower: Mapped[str | None] = mapped_column(Text)
+    vs_higher: Mapped[str | None] = mapped_column(Text)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

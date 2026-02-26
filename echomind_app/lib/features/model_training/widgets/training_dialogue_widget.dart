@@ -1,66 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/providers/model_training_provider.dart';
 
-class TrainingDialogueWidget extends StatelessWidget {
+class TrainingDialogueWidget extends ConsumerStatefulWidget {
   const TrainingDialogueWidget({super.key});
 
   @override
+  ConsumerState<TrainingDialogueWidget> createState() =>
+      _TrainingDialogueWidgetState();
+}
+
+class _TrainingDialogueWidgetState
+    extends ConsumerState<TrainingDialogueWidget> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
+    final state = ref.watch(trainingProvider);
+    _scrollToBottom();
+
+    final hasNextStep = state.canAdvance;
+    final hasResult = state.trainingResult != null;
+    final extraCount = (state.isSending ? 1 : 0) +
+        (hasNextStep ? 1 : 0) +
+        (hasResult ? 1 : 0);
+
+    return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      children: [
-        _bubble('上一步你成功识别了板块运动模型。现在, 面对板块运动题, 你的第一步分析是什么?', true),
-        const SizedBox(height: 8),
-        _bubble('先分析两个物体各自受力', false),
-        const SizedBox(height: 8),
-        _bubble('对! 分别对物块和木板进行受力分析。那么物块受几个力? 分别是什么?', true),
-        const SizedBox(height: 8),
-        _bubble('物块受重力、支持力和摩擦力, 三个力', false),
-        const SizedBox(height: 8),
-        _bubble('正确。接下来关键的一步: 你怎么判断物块和木板之间的相对运动状态? 以及什么时候两者达到共速?', true),
-        const SizedBox(height: 12),
-        // Quick options
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _optionChip('比较两个物体的加速度'),
-            _optionChip('用相对速度判断'),
-            _optionChip('不确定'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        // Summary card
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppTheme.background,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                const Text('Step 1 识别训练',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.primary)),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text('已通过', style: TextStyle(fontSize: 9, color: AppTheme.primary, fontWeight: FontWeight.w600)),
-                ),
-              ]),
-              const SizedBox(height: 4),
-              const Text('耗时 1分30秒 -- 正确识别板块运动模型',
-                  style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
-                  maxLines: 2, overflow: TextOverflow.ellipsis),
-            ],
-          ),
-        ),
-      ],
+      itemCount: state.messages.length + extraCount,
+      itemBuilder: (_, i) {
+        // 消息气泡
+        if (i < state.messages.length) {
+          final msg = state.messages[i];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _bubble(msg.content, msg.role == 'assistant'),
+          );
+        }
+
+        final offset = i - state.messages.length;
+
+        // 发送中指示器
+        if (state.isSending && offset == 0) {
+          return const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: _TypingIndicator(),
+          );
+        }
+
+        // "进入下一步"按钮
+        final nextOffset = state.isSending ? 1 : 0;
+        if (hasNextStep && offset == nextOffset) {
+          return _buildNextStepButton();
+        }
+
+        // 训练结果卡片
+        if (hasResult) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: _TrainingResultCard(result: state.trainingResult!),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -74,20 +97,142 @@ class TrainingDialogueWidget extends StatelessWidget {
           color: isAi ? AppTheme.surface : AppTheme.primary,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
-        child: Text(text,
-            style: TextStyle(fontSize: 14, height: 1.5, color: isAi ? null : Colors.white)),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 14,
+            height: 1.5,
+            color: isAi ? null : Colors.white,
+          ),
+        ),
       ),
     );
   }
 
-  static Widget _optionChip(String text) {
+  Widget _buildNextStepButton() {
+    final hint = ref.read(trainingProvider).nextStepHint;
+    final label = hint != null ? '进入下一步：${hint.stepName}' : '进入下一步';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Center(
+        child: SizedBox(
+          width: double.infinity,
+          height: 44,
+          child: ElevatedButton(
+            onPressed: () {
+              ref.read(trainingProvider.notifier).nextStep();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 0,
+            ),
+            child: Text(label,
+                style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w600)),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TypingIndicator extends StatelessWidget {
+  const _TypingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            SizedBox(width: 8),
+            Text('AI 思考中...',
+                style:
+                    TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TrainingResultCard extends StatelessWidget {
+  final TrainingResult result;
+  const _TrainingResultCard({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final mu = result.masteryUpdate;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        border: Border.all(color: AppTheme.divider),
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
-      child: Text(text, style: const TextStyle(fontSize: 13)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('训练完成',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 10),
+          _buildMasteryRow(mu),
+          const SizedBox(height: 8),
+          _buildStepsRow(),
+          if (result.aiSummary.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(result.aiSummary,
+                style: const TextStyle(
+                    fontSize: 13, color: AppTheme.textSecondary)),
+          ],
+        ],
+      ),
     );
+  }
+
+  Widget _buildMasteryRow(MasteryUpdate mu) {
+    final levelUp = mu.newLevel > mu.previousLevel;
+    return Row(
+      children: [
+        const Text('掌握度：',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+        Text('L${mu.previousLevel}',
+            style: const TextStyle(
+                fontSize: 13, color: AppTheme.textSecondary)),
+        Icon(levelUp ? Icons.arrow_upward : Icons.arrow_forward,
+            size: 14,
+            color: levelUp ? AppTheme.success : AppTheme.textSecondary),
+        Text('L${mu.newLevel}',
+            style: TextStyle(
+              fontSize: 13,
+              color: levelUp ? AppTheme.success : AppTheme.textSecondary,
+              fontWeight: levelUp ? FontWeight.w600 : FontWeight.normal,
+            )),
+      ],
+    );
+  }
+
+  Widget _buildStepsRow() {
+    final passed = result.stepsPassed.length;
+    final total = result.stepsCompleted.length;
+    return Text('完成步骤：$passed / $total 通过',
+        style: const TextStyle(
+            fontSize: 12, color: AppTheme.textSecondary));
   }
 }

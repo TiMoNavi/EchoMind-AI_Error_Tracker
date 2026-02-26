@@ -6,40 +6,50 @@ import 'package:echomind_app/providers/prediction_provider.dart';
 class TrendCardWidget extends ConsumerWidget {
   const TrendCardWidget({super.key});
 
-  static const _mockPoints = [
-    TrendPoint(label: 'W1', value: 58),
-    TrendPoint(label: 'W2', value: 62),
-    TrendPoint(label: 'W3', value: 60),
-    TrendPoint(label: 'W4', value: 65),
-    TrendPoint(label: 'W5', value: 68),
-    TrendPoint(label: 'W6', value: 72),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prediction = ref.watch(predictionProvider);
 
-    final points = prediction.whenOrNull(
-      data: (d) => d.trend.isNotEmpty ? d.trend : null,
-    ) ?? _mockPoints;
+    return prediction.when(
+      loading: () => const SizedBox(
+          height: 150, child: Center(child: CircularProgressIndicator())),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (d) => _buildCard(d.trend),
+    );
+  }
 
+  Widget _buildCard(List<TrendPoint> points) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+        decoration: BoxDecoration(
+            color: AppTheme.surface,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('预测分趋势', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            const Text('预测分趋势',
+                style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
-            SizedBox(
-              height: 120,
-              child: CustomPaint(
-                size: const Size(double.infinity, 120),
-                painter: _TrendPainter(points),
+            if (points.isEmpty)
+              const SizedBox(
+                height: 80,
+                child: Center(
+                  child: Text('数据积累中，上传更多题目后展示趋势',
+                      style: TextStyle(
+                          fontSize: 13, color: AppTheme.textSecondary)),
+                ),
+              )
+            else
+              SizedBox(
+                height: 120,
+                child: CustomPaint(
+                  size: const Size(double.infinity, 120),
+                  painter: _TrendPainter(points),
+                ),
               ),
-            ),
           ],
         ),
       ),

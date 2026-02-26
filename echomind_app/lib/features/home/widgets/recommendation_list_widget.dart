@@ -49,7 +49,9 @@ class RecommendationListWidget extends ConsumerWidget {
             'L${item.currentLevel}',
           ],
           onTap: () => context.push(
-            item.targetType == 'knowledge' ? AppRoutes.knowledgeDetail : AppRoutes.modelDetail,
+            item.targetType == 'knowledge'
+                ? AppRoutes.knowledgeDetailPath(item.targetId)
+                : AppRoutes.modelDetailPath(item.targetId),
           ),
         ),
     ]);

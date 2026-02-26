@@ -61,6 +61,7 @@ async def get_prediction(db: AsyncSession, user: Student) -> PredictionResponse:
 
     return PredictionResponse(
         predicted_score=user.predicted_score,
+        target_score=getattr(user, 'target_score', None) or 90.0,
         trend_data=trend_data,
         priority_models=priority_models,
         score_path=score_path,

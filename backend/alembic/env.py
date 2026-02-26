@@ -17,6 +17,13 @@ from app.models.question import Question  # noqa: F401
 from app.models.regional_template import RegionalTemplate  # noqa: F401
 from app.models.upload_batch import UploadBatch  # noqa: F401
 from app.models.confusion_group import ConfusionGroup  # noqa: F401
+from app.models.diagnosis_session import DiagnosisSessionModel  # noqa: F401
+from app.models.diagnosis_message import DiagnosisMessageModel  # noqa: F401
+from app.models.learning_session import LearningSessionModel  # noqa: F401
+from app.models.learning_message import LearningMessageModel  # noqa: F401
+from app.models.training_session import TrainingSessionModel  # noqa: F401
+from app.models.training_message import TrainingMessageModel  # noqa: F401
+from app.models.training_step_result import TrainingStepResultModel  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

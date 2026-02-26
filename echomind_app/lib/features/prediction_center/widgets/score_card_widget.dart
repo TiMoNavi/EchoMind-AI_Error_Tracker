@@ -14,7 +14,15 @@ class ScoreCardWidget extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: prediction.when(
         loading: () => const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator())),
-        error: (_, __) => _buildCard(72, 85),
+        error: (_, __) => Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+          child: const Row(children: [
+            Icon(Icons.error_outline, size: 18, color: AppTheme.textSecondary),
+            SizedBox(width: 8),
+            Text('加载失败，下拉刷新重试', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+          ]),
+        ),
         data: (d) => _buildCard(d.predictedScore.round(), d.targetScore.round()),
       ),
     );

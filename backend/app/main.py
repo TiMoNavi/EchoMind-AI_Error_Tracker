@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.routers import auth, knowledge, models, questions, recommendations, dashboard, upload, prediction, weekly_review, exams, flashcards, diagnosis, learning, training
+from app.routers import auth, knowledge, models, questions, recommendations, dashboard, upload, prediction, weekly_review, exams, flashcards, diagnosis, learning, training, strategy
 
 # OpenAPI Tag 分组与描述
 tags_metadata = [
@@ -21,9 +21,10 @@ tags_metadata = [
     {"name": "周报", "description": "周学习报告"},
     {"name": "考试", "description": "考试记录、热力图"},
     {"name": "闪卡复习", "description": "间隔重复复习系统"},
-    {"name": "AI诊断", "description": "🔧 Stub - AI 诊断对话会话"},
-    {"name": "知识学习", "description": "🔧 Stub - 知识点学习对话会话"},
+    {"name": "AI诊断", "description": "AI 诊断对话会话（多轮对话诊断错题根因）"},
+    {"name": "知识学习", "description": "知识点学习对话会话（五步 AI 引导学习）"},
     {"name": "模型训练", "description": "🔧 Stub - 解题模型训练对话会话"},
+    {"name": "卷面策略", "description": "卷面策略生成与管理（纯规则，零 LLM 成本）"},
     {"name": "📋 计划中-教育数据", "description": "需要教育数据支撑的计划端点，尚未实现"},
 ]
 
@@ -66,6 +67,7 @@ app.include_router(flashcards.router, prefix="/api")
 app.include_router(diagnosis.router, prefix="/api")
 app.include_router(learning.router, prefix="/api")
 app.include_router(training.router, prefix="/api")
+app.include_router(strategy.router, prefix="/api")
 
 # 静态文件服务 — 图片上传目录
 _uploads_dir = Path(__file__).resolve().parents[1] / "uploads"

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class TopFrameWidget extends StatelessWidget {
-  const TopFrameWidget({super.key});
+  final String modelName;
+  const TopFrameWidget({super.key, this.modelName = ''});
 
   @override
   Widget build(BuildContext context) {
+    final title = modelName.isNotEmpty ? '$modelName · 训练' : '模型训练';
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
       child: Row(
@@ -14,7 +16,12 @@ class TopFrameWidget extends StatelessWidget {
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
-          const Text('受力分析 · 训练', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          Expanded(
+            child: Text(title,
+                style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis),
+          ),
         ],
       ),
     );

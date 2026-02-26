@@ -50,12 +50,26 @@ final appRouter = GoRouter(
     // Detail & sub pages
     GoRoute(path: AppRoutes.globalModel, builder: (_, __) => const GlobalModelPage()),
     GoRoute(path: AppRoutes.globalExam, builder: (_, __) => const GlobalExamPage()),
-    GoRoute(path: AppRoutes.aiDiagnosis, builder: (_, __) => const AiDiagnosisPage()),
+    GoRoute(path: AppRoutes.aiDiagnosis, builder: (_, state) {
+      final questionId = state.uri.queryParameters['questionId'];
+      return AiDiagnosisPage(questionId: questionId);
+    }),
     GoRoute(path: AppRoutes.flashcardReview, builder: (_, __) => const FlashcardReviewPage()),
     GoRoute(path: AppRoutes.knowledgeDetail, builder: (_, state) => KnowledgeDetailPage(kpId: state.pathParameters['id']!)),
-    GoRoute(path: AppRoutes.knowledgeLearning, builder: (_, __) => const KnowledgeLearningPage()),
+    GoRoute(
+      path: AppRoutes.knowledgeLearning,
+      builder: (_, state) => KnowledgeLearningPage(
+        knowledgePointId: state.uri.queryParameters['kpId'] ?? '',
+        source: state.uri.queryParameters['source'] ?? 'self_study',
+      ),
+    ),
     GoRoute(path: AppRoutes.modelDetail, builder: (_, state) => ModelDetailPage(modelId: state.pathParameters['id']!)),
-    GoRoute(path: AppRoutes.modelTraining, builder: (_, __) => const ModelTrainingPage()),
+    GoRoute(path: AppRoutes.modelTraining, builder: (_, state) {
+      final modelId = state.uri.queryParameters['modelId'];
+      final source = state.uri.queryParameters['source'] ?? 'self_study';
+      final questionId = state.uri.queryParameters['questionId'];
+      return ModelTrainingPage(modelId: modelId, source: source, questionId: questionId);
+    }),
     GoRoute(path: AppRoutes.predictionCenter, builder: (_, __) => const PredictionCenterPage()),
     GoRoute(path: AppRoutes.questionAggregate, builder: (_, __) => const QuestionAggregatePage()),
     GoRoute(path: AppRoutes.questionDetail, builder: (_, state) => QuestionDetailPage(questionId: state.pathParameters['id']!)),

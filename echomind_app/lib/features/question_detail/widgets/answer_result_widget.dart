@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 
 class AnswerResultWidget extends StatelessWidget {
-  const AnswerResultWidget({super.key});
+  final String questionId;
+  const AnswerResultWidget({super.key, required this.questionId});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class AnswerResultWidget extends StatelessWidget {
               width: double.infinity,
               height: 40,
               child: OutlinedButton(
-                onPressed: () => context.push(AppRoutes.aiDiagnosis),
+                onPressed: () => context.push(AppRoutes.aiDiagnosisPath(questionId: questionId)),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: AppTheme.primary),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),

@@ -24,7 +24,7 @@ class QuestionDetailPage extends StatelessWidget {
                 children: [
                   QuestionContentWidget(questionId: questionId),
                   const SizedBox(height: 12),
-                  const AnswerResultWidget(),
+                  AnswerResultWidget(questionId: questionId),
                   const SizedBox(height: 12),
                   QuestionRelationsWidget(questionId: questionId),
                   const SizedBox(height: 12),
