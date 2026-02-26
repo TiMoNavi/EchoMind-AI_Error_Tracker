@@ -108,6 +108,7 @@
 | 关键点 | 文本 | AI/教研标注 | 是 |
 | 验证动作 | 枚举(追问/讲解/复做/确认/换卡) | 系统决策 | 是 |
 | 本轮结论 | 枚举(pass/fail/partial) | AI判定 | 是 |
+| 置信度(confidence) | 数值(0.0-1.0) | AI判定 | 是（L2 层，表示 AI 对本轮结论的确信程度） |
 | 下一步 | 文本 | 系统决策 | 是 |
 | 错因标签 | 标签集合(可叠加) | AI判定+教研预设 | 是（加工信号，但需存） |
 | 用时(秒) | 数值 | 系统记录 | 是 |
@@ -236,6 +237,7 @@
 | 题目原文 + 标签 | L1 原始事件 | 预设内容，不可篡改 |
 | 时间戳 | L1 原始事件 | 系统时钟 |
 | 本轮结论（pass/fail/partial） | L2 当场判断 | AI 根据学生输出做的判断 |
+| 置信度（confidence, 0.0-1.0） | L2 当场判断 | AI 对本轮结论的确信程度，低置信度时系统可选择追问而非直接判定 |
 | 错因标签（可叠加集合） | L2 当场判断 | AI 判定+教研映射 |
 | 关键点 | L2 当场判断 | AI/教研标注"这次交互测的核心是什么" |
 | 验证动作（追问/讲解/复做/确认/换卡） | L2 当场判断 | 系统做的决策 |
@@ -500,6 +502,177 @@ AI 系统需要把这些开放对话转成可判断的结构化交互。
 | 改 mastery 公式本身 | 改引擎 + 从 L1+L2 重算所有 L3 | 改（唯一需要改引擎的场景） | 开发+重算 |
 
 **结论：除了改掌握度公式结构本身，所有扩展都不需要动引擎。而公式结构在 v1.0 已经比较稳定了。**
+
+### 4.9 ServiceResponse 服务响应模型
+
+> 来源：decision-support-framework-v1.md §6
+> 核心思想：引擎的输出不只是"推荐下一步"，而是一个前端可直接执行的结构化响应包
+
+引擎每次做完决策（Atom 交互循环的第 8 步"引擎决策下一步"）后，输出一个 ServiceResponse，包含四个面：
+
+| 输出面 | 字段名 | 职责 | 举例 |
+|--------|--------|------|------|
+| 现状感知 | `state_perception` | 告诉学生/家长"当前状态是什么" | "你在回旋加速器的过程拆分上卡住了" |
+| 行为引导 | `action_guidance` | 告诉学生"下一步该做什么" | "先用 5 分钟完成这道题的过程分析" |
+| 界面变化 | `ui_effects` | 告诉前端"哪些 UI 元素需要刷新" | 刷新能力卡、更新进度条、置顶卡片 |
+| 导航/流程 | `navigation_or_flow` | 告诉前端"是否需要跳转或启动流程" | 留在当前页 / 跳转训练页 / 恢复中断的 Episode |
+
+**最小响应包结构（TypeScript 风格，实际用 Python Pydantic）：**
+
+```ts
+ServiceResponse = {
+  response_id: string
+  timestamp: string
+
+  // 目标上下文
+  goal_context: {
+    goal_type: string        // diagnose / teach / verify / review
+    priority: number
+  }
+
+  // 作用对象（对应 Episode 或 Atom）
+  anchors: Array<{
+    anchor_type: string      // episode / atom / knowledge_point / model
+    anchor_id: string
+  }>
+
+  // 四面输出
+  state_perception: {
+    current_issue?: string
+    current_focus?: string
+    confidence_hint?: string   // 基于 Atom confidence 字段
+    progress_signal?: string
+  }
+
+  action_guidance: {
+    recommended_action: string
+    reason: string
+    expected_value?: string
+    estimated_time?: string
+    guidance_mode?: string     // quick / guided / deep
+  }
+
+  ui_effects: {
+    refresh_targets?: string[]
+    patch_fields?: Array<{ path: string, value: unknown }>
+    highlight_targets?: string[]
+    toast?: string
+  }
+
+  navigation_or_flow: {
+    type: "stay" | "navigate" | "start_flow" | "resume_flow" | "modal"
+    target?: string
+    episode_id?: string
+    step_id?: string
+    params?: Record<string, unknown>
+  }
+
+  // 决策溯源（便于教研复核）
+  decision_trace: {
+    top_rules: string[]          // 触发了哪些规则
+    top_evidence_refs: string[]  // 基于哪些 L1 事件
+    top_state_refs: string[]     // 基于哪些 L2/L3 状态
+  }
+}
+```
+
+**与现有架构的关系：**
+- ServiceResponse 是引擎层 Atom 交互循环第 8 步的输出格式化
+- `anchors` 对应现有的 Episode/Atom ID
+- `decision_trace` 引用 L1/L2/L3 层的数据
+- 不改变引擎内部逻辑，只规范化输出接口
+
+### 4.10 周期迭代循环与版本化
+
+> 来源：decision-support-framework-v1.md §5.2
+> 核心思想：引擎的 Atom 交互循环是"实时小循环"，还需要一个"周期大循环"来支撑教研迭代
+
+**实时循环（已有）：** §4.2A 的 Atom 交互循环，每次学生交互都在跑。
+
+**周期迭代循环（新增）：** 面向教研与系统演化的大循环。
+
+```
+1. 预设（Preset）
+   教研给出：流程片段、规则参数、标签体系、提示词模板初版
+   → 对应内容包（Content Pack）的初始版本
+
+2. 运行（Run）
+   学生真实使用，产生 L1 事件 + L2 判断 + L3 聚合
+
+3. 复盘（Review）
+   看关键指标：
+   - 诊断准确率（L2 判断 vs 教研复核）
+   - Episode 完成率 / 中断率
+   - mastery 变化趋势（是否符合预期）
+   - 推荐命中率（推荐的训练是否带来提分）
+
+4. 修正（Adjust）
+   改内容包/配置层的参数，不改引擎：
+   - 调 mastery_params（base_r / base_p）
+   - 调提示词模板
+   - 调错因标签映射
+   - 调推荐排序权重
+
+5. 版本化上线（Versioned Release）
+   - 内容包和配置层支持版本号
+   - 保留历史版本，允许回滚
+   - L1/L2 数据不受版本切换影响（真相源不变）
+```
+
+**版本化要求（V1 最小实现）：**
+
+| 对象 | 版本化方式 | 回滚能力 |
+|------|-----------|---------|
+| 内容包（Content Pack） | 目录级版本号（如 `content_pack_physics_v1.2/`） | 切换目录即回滚 |
+| 配置层（Config） | JSON 文件级版本号 | 切换文件即回滚 |
+| mastery 参数 | 记录在配置文件中，随配置版本走 | 改参数后从 L1+L2 重算 L3 |
+| AI 提示词模板 | 文件级版本号 | 切换文件即回滚 |
+
+**与现有架构的关系：**
+- 这是 Phase 2 三层分离的运维补充——三层分离解决"怎么组织代码"，周期迭代解决"怎么持续改进"
+- 不新增引擎层代码，只要求内容包和配置层支持版本管理
+
+### 4.11 角色化响应投影
+
+> 来源：decision-support-framework-v1.md §7
+> 核心思想：同一底层状态（L3 聚合视图），按角色（学生/家长）生成不同的展示内容
+
+**原则：底层共享，响应分离。**
+
+L1/L2/L3 数据对所有角色完全一致。差异只发生在 ServiceResponse 的文案和展示层面。
+
+**学生视角（系统稳定给出两件事）：**
+
+1. 现状感知：我现在的问题/重点是什么
+2. 行为引导：我现在该做什么，系统如何带我做
+
+**家长视角（同一底层状态的另一种投影）：**
+
+1. 进展可见：努力是否转化成变化（不只看结果）
+2. 计划可解释：为什么安排这一步、预计效果与时间投入
+
+**对照表（同一 L3 状态，不同 ServiceResponse 文案）：**
+
+| L3 聚合状态 | 学生响应（现状+引导） | 家长响应（可见+可解释） |
+|------------|---------------------|---------------------|
+| 模型 mastery 近期波动大 | "你最近这类题容易忘，先做 8 分钟维护复习" | "近期保持性下降，先做短时维护更稳妥" |
+| Episode 中断未完成 | "你上次做到一半停下了，继续完成这一段" | "不是不会，是中断。先恢复连续性比换新任务更值" |
+| 多个模型待诊断 | "先定位原因，不然后面练习会偏" | "先诊断再训练，避免重复投入无效时间" |
+| mastery 稳步上升 | "这个模型你已经连续 3 次 pass，继续保持" | "该模型掌握度从 40→65，按当前节奏预计 2 周达标" |
+
+**正激励约束（响应生成规则）：**
+
+每个学生端 ServiceResponse 至少满足：
+1. 说清现状（不撒谎、不模糊）
+2. 给出可执行下一步（不空泛）
+3. 优先给可完成动作（建立行动感）
+4. 用进展语言表达（不只贴标签，如"从 L2 到 L3"改为"比上周多掌握了 2 个关键步骤"）
+
+**与现有架构的关系：**
+- §3.3 的 L3 聚合视图已列出"给谁看"（系统内部/学生+家长/系统+老师）
+- 本节将"给谁看"细化为"怎么说"——同一数据，不同话术
+- 实现位置：呈现层（前端）+ ServiceResponse 的 `state_perception` / `action_guidance` 字段
+- Phase 0 约束 #4（不做家长端）仍然有效——家长视角通过截图/H5 分享页实现，不是独立 App
 
 ---
 
