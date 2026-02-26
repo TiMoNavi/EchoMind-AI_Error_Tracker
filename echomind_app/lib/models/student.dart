@@ -14,6 +14,8 @@ class Student {
   final int targetScore;
   @JsonKey(name: 'predicted_score')
   final double? predictedScore;
+  @JsonKey(name: 'avatar_url')
+  final String? avatarUrl;
 
   const Student({
     required this.id,
@@ -23,6 +25,7 @@ class Student {
     required this.subject,
     required this.targetScore,
     this.predictedScore,
+    this.avatarUrl,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);

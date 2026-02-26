@@ -1,5 +1,5 @@
 """Auth request/response schemas."""
-from typing import Literal
+from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 # 枚举常量
@@ -36,9 +36,17 @@ class UserResponse(BaseModel):
     id: str = Field(description="用户唯一 ID (UUID)")
     phone: str = Field(description="手机号")
     nickname: str | None = Field(description="用户昵称")
+    avatar_url: str | None = Field(default=None, description="头像 URL")
     region_id: str = Field(description="考区/地区 ID (tianjin/beijing/shanghai/national)")
     subject: str = Field(description="学科 (physics/math/chemistry)")
     target_score: int = Field(description="目标分数 (30-100)")
     predicted_score: float | None = Field(description="AI 预测分数，无数据时为 null")
 
     model_config = {"from_attributes": True}
+
+
+class ProfileUpdate(BaseModel):
+    """个人资料更新请求，所有字段可选，仅更新传入的字段。"""
+    nickname: Optional[str] = Field(default=None, description="用户昵称")
+    avatar_url: Optional[str] = Field(default=None, description="头像 URL")
+    target_score: Optional[int] = Field(default=None, ge=30, le=100, description="目标分数 (30-100)")

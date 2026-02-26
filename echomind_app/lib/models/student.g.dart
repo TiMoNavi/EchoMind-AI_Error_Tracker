@@ -14,6 +14,7 @@ Student _$StudentFromJson(Map<String, dynamic> json) => Student(
       subject: json['subject'] as String,
       targetScore: (json['target_score'] as num).toInt(),
       predictedScore: (json['predicted_score'] as num?)?.toDouble(),
+      avatarUrl: json['avatar_url'] as String?,
     );
 
 Map<String, dynamic> _$StudentToJson(Student instance) => <String, dynamic>{
@@ -24,4 +25,5 @@ Map<String, dynamic> _$StudentToJson(Student instance) => <String, dynamic>{
       'subject': instance.subject,
       'target_score': instance.targetScore,
       'predicted_score': instance.predictedScore,
+      'avatar_url': instance.avatarUrl,
     };

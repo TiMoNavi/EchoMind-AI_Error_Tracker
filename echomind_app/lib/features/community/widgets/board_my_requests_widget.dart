@@ -1,69 +1,214 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/providers/community_provider.dart';
+import 'package:echomind_app/models/community.dart';
 
-class BoardMyRequestsWidget extends StatelessWidget {
+class BoardMyRequestsWidget extends ConsumerStatefulWidget {
   const BoardMyRequestsWidget({super.key});
 
   @override
+  ConsumerState<BoardMyRequestsWidget> createState() =>
+      _BoardMyRequestsWidgetState();
+}
+
+class _BoardMyRequestsWidgetState
+    extends ConsumerState<BoardMyRequestsWidget> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+        () => ref.read(communityProvider.notifier).fetchRequests());
+  }
+
+  void _showSubmitDialog() {
+    final titleCtrl = TextEditingController();
+    final descCtrl = TextEditingController();
+    String? selectedTag;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('提交新需求'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleCtrl,
+                decoration: const InputDecoration(
+                  labelText: '标题',
+                  hintText: '简要描述你的需求',
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descCtrl,
+                decoration: const InputDecoration(
+                  labelText: '详细描述',
+                  hintText: '详细说明你希望实现的功能',
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: selectedTag,
+                decoration: const InputDecoration(labelText: '标签（可选）'),
+                items: const [
+                  DropdownMenuItem(value: '功能请求', child: Text('功能请求')),
+                  DropdownMenuItem(value: '体验优化', child: Text('体验优化')),
+                  DropdownMenuItem(value: 'UI', child: Text('UI')),
+                  DropdownMenuItem(value: '其他', child: Text('其他')),
+                ],
+                onChanged: (v) => setDialogState(() => selectedTag = v),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('取消'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                if (titleCtrl.text.trim().isEmpty) return;
+                Navigator.pop(ctx);
+                final ok = await ref
+                    .read(communityProvider.notifier)
+                    .submitRequest(
+                      title: titleCtrl.text.trim(),
+                      description: descCtrl.text.trim(),
+                      tag: selectedTag,
+                    );
+                if (mounted && !ok) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('提交失败，请重试')),
+                  );
+                }
+              },
+              child: const Text('提交'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(communityProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
+          // 提交按钮
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: state.isSubmitting ? null : _showSubmitDialog,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
                 elevation: 0,
               ),
-              child: const Text('提交新需求'),
+              child: state.isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
+                  : const Text('提交新需求'),
             ),
           ),
           const SizedBox(height: 12),
-          const _RequestCard(
-            title: '希望增加错题导出PDF功能',
-            subtitle: '可以把错题按模型分组导出打印',
-            votes: 23,
-            tags: ['功能请求', '3天前'],
-            highlight: true,
-          ),
-          const _RequestCard(
-            title: '数学也需要过程拆分训练',
-            subtitle: '解析几何大题特别需要过程拆分',
-            votes: 45,
-            tags: ['功能请求', '高票', '5天前'],
-            highlight: true,
-          ),
-          const _RequestCard(
-            title: '闪卡能不能支持手写公式',
-            subtitle: '打字输入公式太麻烦了',
-            votes: 8,
-            tags: ['体验优化', '1周前'],
-            highlight: false,
-          ),
+          // 三态 UI
+          if (state.isLoading && state.requests.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(40),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (state.errorMessage != null && state.requests.isEmpty)
+            _buildError(state.errorMessage!)
+          else if (state.requests.isEmpty)
+            _buildEmpty()
+          else
+            ...state.requests.map((r) => _RequestCard(
+                  request: r,
+                  onVote: () => ref
+                      .read(communityProvider.notifier)
+                      .toggleVote(r.id),
+                )),
         ],
       ),
     );
   }
+
+  Widget _buildEmpty() => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        child: const Column(
+          children: [
+            Text('📝', style: TextStyle(fontSize: 36)),
+            SizedBox(height: 12),
+            Text('还没有需求', style: TextStyle(fontSize: 15, color: AppTheme.textSecondary)),
+            SizedBox(height: 4),
+            Text('点击上方按钮提交你的第一个需求',
+                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+          ],
+        ),
+      );
+
+  Widget _buildError(String msg) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        child: Column(
+          children: [
+            const Text('⚠️', style: TextStyle(fontSize: 36)),
+            const SizedBox(height: 12),
+            Text('加载失败', style: const TextStyle(fontSize: 15, color: AppTheme.danger)),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => ref.read(communityProvider.notifier).fetchRequests(),
+              child: const Text('重试'),
+            ),
+          ],
+        ),
+      );
 }
 
 class _RequestCard extends StatelessWidget {
-  final String title, subtitle;
-  final int votes;
-  final List<String> tags;
-  final bool highlight;
-  const _RequestCard({required this.title, required this.subtitle, required this.votes, required this.tags, required this.highlight});
+  final FeatureRequest request;
+  final VoidCallback onVote;
+  const _RequestCard({required this.request, required this.onVote});
+
+  String _timeAgo(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inDays > 0) return '${diff.inDays}天前';
+    if (diff.inHours > 0) return '${diff.inHours}小时前';
+    return '刚刚';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final highlight = request.voteCount >= 10;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,18 +219,45 @@ class _RequestCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(request.title,
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(request.description,
+                        style: const TextStyle(
+                            fontSize: 13, color: AppTheme.textSecondary),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              Column(
-                children: [
-                  Text('$votes', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: highlight ? AppTheme.primary : AppTheme.textSecondary)),
-                  const Text('票', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
-                ],
+              const SizedBox(width: 12),
+              // 投票按钮
+              GestureDetector(
+                onTap: onVote,
+                child: Column(
+                  children: [
+                    Icon(
+                      request.voted
+                          ? Icons.thumb_up
+                          : Icons.thumb_up_outlined,
+                      size: 20,
+                      color: request.voted
+                          ? AppTheme.primary
+                          : AppTheme.textSecondary,
+                    ),
+                    const SizedBox(height: 2),
+                    Text('${request.voteCount}',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: highlight
+                                ? AppTheme.primary
+                                : AppTheme.textSecondary)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -93,19 +265,29 @@ class _RequestCard extends StatelessWidget {
           Wrap(
             spacing: 6,
             children: [
-              for (final t in tags)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: t == '高票' ? AppTheme.primary.withValues(alpha: 0.1) : AppTheme.background,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(t, style: TextStyle(fontSize: 11, color: t == '高票' ? AppTheme.primary : AppTheme.textSecondary)),
-                ),
+              if (request.tag != null)
+                _tag(request.tag!, false),
+              if (highlight) _tag('高票', true),
+              _tag(_timeAgo(request.createdAt), false),
             ],
           ),
         ],
       ),
     );
   }
+
+  Widget _tag(String text, bool isPrimary) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: isPrimary
+              ? AppTheme.primary.withValues(alpha: 0.1)
+              : AppTheme.background,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(text,
+            style: TextStyle(
+                fontSize: 11,
+                color:
+                    isPrimary ? AppTheme.primary : AppTheme.textSecondary)),
+      );
 }

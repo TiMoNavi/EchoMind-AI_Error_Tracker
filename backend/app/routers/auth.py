@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.core.security import hash_password, verify_password, create_access_token
 from app.models.student import Student
-from app.schemas.auth import RegisterRequest, LoginRequest, AuthResponse, UserResponse
+from app.schemas.auth import RegisterRequest, LoginRequest, AuthResponse, UserResponse, ProfileUpdate
 
 router = APIRouter(prefix="/auth", tags=["认证"])
 
@@ -15,6 +15,7 @@ router = APIRouter(prefix="/auth", tags=["认证"])
 def _to_user_response(u: Student) -> UserResponse:
     return UserResponse(
         id=str(u.id), phone=u.phone, nickname=u.nickname,
+        avatar_url=u.avatar_url,
         region_id=u.region_id, subject=u.subject,
         target_score=u.target_score, predicted_score=u.predicted_score,
     )
@@ -59,4 +60,21 @@ async def login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 async def me(user: Student = Depends(get_current_user)):
+    return _to_user_response(user)
+
+
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    req: ProfileUpdate,
+    user: Student = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """更新个人资料，仅更新传入的非 None 字段。"""
+    update_data = req.model_dump(exclude_unset=True)
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    for field, value in update_data.items():
+        setattr(user, field, value)
+    await db.commit()
+    await db.refresh(user)
     return _to_user_response(user)

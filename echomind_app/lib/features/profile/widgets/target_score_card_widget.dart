@@ -10,11 +10,9 @@ class TargetScoreCardWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
 
-    return profile.when(
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => _buildCard(target: 0, subject: '--'),
-      data: (user) => _buildCard(target: user.targetScore, subject: user.subject),
-    );
+    if (profile.loading) return const SizedBox.shrink();
+    if (profile.student == null) return _buildCard(target: 0, subject: '--');
+    return _buildCard(target: profile.student!.targetScore, subject: profile.student!.subject);
   }
 
   Widget _buildCard({required int target, required String subject}) {

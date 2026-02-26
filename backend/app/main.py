@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.routers import auth, knowledge, models, questions, recommendations, dashboard, upload, prediction, weekly_review, exams, flashcards, diagnosis, learning, training, strategy
+from app.routers import auth, knowledge, models, questions, recommendations, dashboard, upload, prediction, weekly_review, exams, flashcards, diagnosis, learning, training, strategy, community
 
 # OpenAPI Tag 分组与描述
 tags_metadata = [
@@ -25,6 +25,7 @@ tags_metadata = [
     {"name": "知识学习", "description": "知识点学习对话会话（五步 AI 引导学习）"},
     {"name": "模型训练", "description": "🔧 Stub - 解题模型训练对话会话"},
     {"name": "卷面策略", "description": "卷面策略生成与管理（纯规则，零 LLM 成本）"},
+    {"name": "社区", "description": "需求投票、反馈收集"},
     {"name": "📋 计划中-教育数据", "description": "需要教育数据支撑的计划端点，尚未实现"},
 ]
 
@@ -68,6 +69,7 @@ app.include_router(diagnosis.router, prefix="/api")
 app.include_router(learning.router, prefix="/api")
 app.include_router(training.router, prefix="/api")
 app.include_router(strategy.router, prefix="/api")
+app.include_router(community.router, prefix="/api")
 
 # 静态文件服务 — 图片上传目录
 _uploads_dir = Path(__file__).resolve().parents[1] / "uploads"
