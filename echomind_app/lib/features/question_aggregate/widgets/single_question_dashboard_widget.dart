@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:echomind_app/providers/question_aggregate_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class SingleQuestionDashboardWidget extends ConsumerWidget {
   const SingleQuestionDashboardWidget({super.key});
@@ -11,40 +13,60 @@ class SingleQuestionDashboardWidget extends ConsumerWidget {
     final async = ref.watch(questionAggregateProvider);
 
     return async.when(
-      loading: () => const SizedBox(height: 80, child: Center(child: CircularProgressIndicator())),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (data) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppTheme.surface,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          ),
-          child: Row(
-            children: [
-              Expanded(child: _Stat(value: '${data.attemptCount}', label: '做题次数')),
-              Expanded(child: _Stat(value: '${(data.correctRate * 100).toInt()}%', label: '正确率')),
-              Expanded(child: _Stat(value: '${data.predictedScore}', label: '预测得分')),
-            ],
-          ),
-        ),
+      loading: () => const SizedBox(
+        height: 80,
+        child: Center(child: CircularProgressIndicator()),
       ),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (data) {
+        final attempts = '${data.attemptCount}';
+        final accuracy = '${(data.correctRate * 100).round()}%';
+        final predicted =
+            data.predictedScore <= 0 ? '--' : '${data.predictedScore}';
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ClayCard(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(child: _buildStat(value: attempts, label: '累计做题')),
+                Expanded(child: _buildStat(value: accuracy, label: '正确率')),
+                Expanded(
+                  child: _buildStat(
+                    value: predicted,
+                    label: '预测得分',
+                    valueColor: AppTheme.accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
-}
 
-class _Stat extends StatelessWidget {
-  final String value, label;
-  const _Stat({required this.value, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStat({
+    required String value,
+    required String label,
+    Color? valueColor,
+  }) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 2),
-        Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+        Text(
+          value,
+          style: GoogleFonts.nunito(
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+            color: valueColor ?? AppTheme.foreground,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: AppTheme.label(size: 12).copyWith(fontWeight: FontWeight.w700),
+        ),
       ],
     );
   }

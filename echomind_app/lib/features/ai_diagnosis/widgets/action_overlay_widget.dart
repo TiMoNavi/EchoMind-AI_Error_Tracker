@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/ai_diagnosis_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
 
 class ActionOverlayWidget extends ConsumerStatefulWidget {
   const ActionOverlayWidget({super.key});
@@ -51,15 +51,15 @@ class _ActionOverlayWidgetState extends ConsumerState<ActionOverlayWidget> {
                 enabled: canSend,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => _send(),
-                style: const TextStyle(fontSize: 14),
+                style: AppTheme.body(size: 14, weight: FontWeight.w700),
                 decoration: InputDecoration(
-                  hintText: canSend ? '输入你的回答...' : '对话已结束',
-                  hintStyle: const TextStyle(
-                      fontSize: 14, color: AppTheme.textSecondary),
+                  hintText: canSend ? '输入你的回答...' : '诊断对话已结束',
+                  hintStyle: AppTheme.body(
+                      size: 13, weight: FontWeight.w600, color: AppTheme.muted),
                   filled: true,
-                  fillColor: AppTheme.background,
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 10),
+                  fillColor: AppTheme.canvas,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
@@ -79,13 +79,15 @@ class _ActionOverlayWidgetState extends ConsumerState<ActionOverlayWidget> {
     return GestureDetector(
       onTap: enabled ? _send : null,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 42,
+        height: 42,
         decoration: BoxDecoration(
-          color: enabled ? AppTheme.primary : AppTheme.textSecondary,
+          gradient: enabled ? AppTheme.gradientPrimary : null,
+          color: enabled ? null : AppTheme.muted,
           shape: BoxShape.circle,
+          boxShadow: enabled ? AppTheme.shadowClayButton : null,
         ),
-        child: const Icon(Icons.send, size: 18, color: Colors.white),
+        child: const Icon(Icons.send_rounded, size: 18, color: Colors.white),
       ),
     );
   }

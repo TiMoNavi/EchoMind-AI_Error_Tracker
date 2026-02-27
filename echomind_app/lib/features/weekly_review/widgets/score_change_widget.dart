@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:echomind_app/providers/weekly_review_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class ScoreChangeWidget extends ConsumerWidget {
   const ScoreChangeWidget({super.key});
@@ -10,59 +12,37 @@ class ScoreChangeWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncData = ref.watch(weeklyReviewProvider);
 
-    return asyncData.when(
-      loading: () => const SizedBox(height: 100, child: Center(child: CircularProgressIndicator())),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (data) => _buildContent(data.lastWeekScore, data.thisWeekScore),
+    final data = asyncData.when(
+      loading: _ScoreViewData.fallback,
+      error: (_, __) => _ScoreViewData.fallback(),
+      data: _ScoreViewData.fromApi,
     );
-  }
 
-  Widget _buildContent(double lastWeek, double thisWeek) {
-    final diff = thisWeek - lastWeek;
-    final diffStr = diff >= 0 ? '+${diff.toInt()}' : '${diff.toInt()}';
-    final isUp = diff >= 0;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('分数变化', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            Text('分数变化',
+                style: AppTheme.heading(size: 22, weight: FontWeight.w900)),
             const SizedBox(height: 12),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Text('上周', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-                      const SizedBox(height: 4),
-                      Text('${lastWeek.toInt()}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                    ],
+                _scoreBlock('上周', data.previousScore, null),
+                const SizedBox(width: 18),
+                Text(
+                  '→',
+                  style: GoogleFonts.nunito(
+                    fontSize: 44,
+                    fontWeight: FontWeight.w900,
+                    color: AppTheme.accent,
                   ),
                 ),
-                const Icon(Icons.arrow_forward, color: AppTheme.textSecondary),
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Text('本周', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-                      const SizedBox(height: 4),
-                      Text('${thisWeek.toInt()}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: (isUp ? AppTheme.success : AppTheme.danger).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(diffStr, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isUp ? AppTheme.success : AppTheme.danger)),
-                ),
+                const SizedBox(width: 18),
+                _scoreBlock('本周', data.currentScore, AppTheme.accent),
               ],
             ),
           ],
@@ -70,4 +50,49 @@ class ScoreChangeWidget extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _scoreBlock(String label, String value, Color? color) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: AppTheme.body(size: 20, weight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: GoogleFonts.nunito(
+            fontSize: 46,
+            fontWeight: FontWeight.w900,
+            color: color ?? AppTheme.foreground,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ScoreViewData {
+  final String previousScore;
+  final String currentScore;
+
+  const _ScoreViewData({
+    required this.previousScore,
+    required this.currentScore,
+  });
+
+  factory _ScoreViewData.fromApi(WeeklyReviewData data) {
+    final isEmpty = data.lastWeekScore == 0 && data.thisWeekScore == 0;
+    if (isEmpty) return _ScoreViewData.fallback();
+
+    return _ScoreViewData(
+      previousScore: data.lastWeekScore.toInt().toString(),
+      currentScore: data.thisWeekScore.toInt().toString(),
+    );
+  }
+
+  factory _ScoreViewData.fallback() => const _ScoreViewData(
+        previousScore: '60',
+        currentScore: '63',
+      );
 }

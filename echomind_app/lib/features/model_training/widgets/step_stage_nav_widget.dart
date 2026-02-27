@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/model_training_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
 
 class StepStageNavWidget extends StatelessWidget {
-  final int currentStep; // 1-6
+  final int currentStep;
   final int entryStep;
   final Map<int, StepResult> stepResults;
 
@@ -23,34 +23,21 @@ class StepStageNavWidget extends StatelessWidget {
     '变式\n训练',
   ];
 
-  /// 步骤圆点颜色：已通过=success，已失败=danger，当前=primary，未到=灰色
-  Color _dotColor(int stepNum) {
-    if (stepResults.containsKey(stepNum)) {
-      return stepResults[stepNum]!.passed ? AppTheme.success : AppTheme.danger;
-    }
-    if (stepNum == currentStep) return AppTheme.primary;
-    if (stepNum < currentStep) return AppTheme.primary;
-    return const Color(0xFFE0E0E0);
-  }
-
-  Color _lineColor(int stepNum) {
-    return stepNum <= currentStep ? AppTheme.primary : const Color(0xFFE0E0E0);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppTheme.divider, width: 0.5)),
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.78),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        boxShadow: AppTheme.shadowClayPressed,
       ),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
       child: Column(
         children: [
-          // 圆点 + 连线
           Row(
             children: [
-              for (int i = 0; i < _labels.length; i++) ...[
+              for (var i = 0; i < _labels.length; i++) ...[
                 if (i > 0)
                   Expanded(
                     child: Container(
@@ -62,25 +49,25 @@ class StepStageNavWidget extends StatelessWidget {
               ],
             ],
           ),
-          const SizedBox(height: 6),
-          // 标签
+          const SizedBox(height: 7),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (int i = 0; i < _labels.length; i++)
+              for (var i = 0; i < _labels.length; i++)
                 SizedBox(
-                  width: 40,
+                  width: 42,
                   child: Text(
                     _labels[i],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 8,
+                    style: AppTheme.label(
+                      size: 9,
                       color: (i + 1) == currentStep
-                          ? AppTheme.primary
-                          : AppTheme.textSecondary,
+                          ? AppTheme.accent
+                          : AppTheme.muted,
+                    ).copyWith(
                       fontWeight: (i + 1) == currentStep
-                          ? FontWeight.w600
-                          : FontWeight.normal,
+                          ? FontWeight.w800
+                          : FontWeight.w600,
                     ),
                   ),
                 ),
@@ -91,9 +78,9 @@ class StepStageNavWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDot(int stepNum) {
-    final color = _dotColor(stepNum);
-    final isCompleted = stepResults.containsKey(stepNum);
+  Widget _buildDot(int step) {
+    final color = _dotColor(step);
+    final result = stepResults[step];
 
     return Container(
       width: 28,
@@ -103,22 +90,39 @@ class StepStageNavWidget extends StatelessWidget {
         color: color,
       ),
       alignment: Alignment.center,
-      child: isCompleted
+      child: result != null
           ? Icon(
-              stepResults[stepNum]!.passed ? Icons.check : Icons.close,
+              result.passed ? Icons.check : Icons.close,
               size: 14,
               color: Colors.white,
             )
           : Text(
-              '$stepNum',
+              '$step',
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: stepNum <= currentStep
+                fontWeight: FontWeight.w800,
+                color: step >= entryStep && step <= currentStep
                     ? Colors.white
-                    : AppTheme.textSecondary,
+                    : AppTheme.muted,
               ),
             ),
     );
+  }
+
+  Color _dotColor(int step) {
+    if (step < entryStep) return const Color(0xFFD9D4E3);
+
+    final result = stepResults[step];
+    if (result != null) {
+      return result.passed ? AppTheme.success : AppTheme.danger;
+    }
+    if (step == currentStep) return AppTheme.accent;
+    if (step < currentStep) return AppTheme.accentLight;
+    return const Color(0xFFD9D4E3);
+  }
+
+  Color _lineColor(int step) {
+    if (step <= entryStep) return const Color(0xFFD9D4E3);
+    return step <= currentStep ? AppTheme.accent : const Color(0xFFD9D4E3);
   }
 }

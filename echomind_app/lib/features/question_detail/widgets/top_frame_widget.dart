@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 
 class TopFrameWidget extends StatelessWidget {
@@ -14,7 +15,10 @@ class TopFrameWidget extends StatelessWidget {
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
-          const Text('题目详情', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          Text(
+            '题目详情',
+            style: AppTheme.heading(size: 20, weight: FontWeight.w900),
+          ),
         ],
       ),
     );

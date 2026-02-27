@@ -15,10 +15,12 @@ class TopFrameWidget extends StatelessWidget {
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
-          const Expanded(
-            child: Text('闪卡复习', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          Expanded(
+            child: Text(
+              '闪卡复习',
+              style: AppTheme.heading(size: 22, weight: FontWeight.w900),
+            ),
           ),
-          const Text('3 / 12', style: TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
         ],
       ),
     );

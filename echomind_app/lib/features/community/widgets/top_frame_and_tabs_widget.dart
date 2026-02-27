@@ -13,19 +13,31 @@ class TopFrameAndTabsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Text('社区', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+          child: Text('社区', style: AppTheme.heading(size: 32, weight: FontWeight.w900)),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              for (var i = 0; i < _tabs.length; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                _TabChip(label: _tabs[i], active: i == activeTab, onTap: () => onTabChanged(i)),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFEBF5),
+              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+              boxShadow: AppTheme.shadowClayPressed,
+            ),
+            child: Row(
+              children: [
+                for (var i = 0; i < _tabs.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 4),
+                  Expanded(child: _TabChip(
+                    label: _tabs[i],
+                    active: i == activeTab,
+                    onTap: () => onTabChanged(i),
+                  )),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -44,15 +56,23 @@ class _TabChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: active ? AppTheme.primary : AppTheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          color: active ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          boxShadow: active
+              ? [
+                  const BoxShadow(offset: Offset(2, 2), blurRadius: 6, color: Color(0x22000000)),
+                  const BoxShadow(offset: Offset(-2, -2), blurRadius: 6, color: Color(0x44FFFFFF)),
+                ]
+              : [],
         ),
+        alignment: Alignment.center,
         child: Text(
           label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: active ? Colors.white : AppTheme.textSecondary),
+          style: AppTheme.label(size: 14, color: active ? AppTheme.accent : AppTheme.muted),
         ),
       ),
     );

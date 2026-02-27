@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/strategy_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class StrategyHeaderWidget extends ConsumerWidget {
   const StrategyHeaderWidget({super.key});
@@ -13,25 +14,23 @@ class StrategyHeaderWidget extends ConsumerWidget {
     if (strategy == null) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 目标分数
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const Icon(Icons.flag_rounded,
-                    color: AppTheme.primary, size: 22),
+                    color: AppTheme.accent, size: 22),
                 const SizedBox(width: 8),
-                const Text('我的目标',
-                    style: TextStyle(fontSize: 15, color: AppTheme.textSecondary)),
+                Text('我的目标',
+                    style: AppTheme.body(
+                        size: 15,
+                        weight: FontWeight.w700,
+                        color: AppTheme.muted)),
                 const Spacer(),
                 _buildEditButton(context, ref),
               ],
@@ -42,45 +41,36 @@ class StrategyHeaderWidget extends ConsumerWidget {
               children: [
                 Text(
                   '${strategy.targetScore}',
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.primary,
-                  ),
+                  style: AppTheme.heading(size: 42, weight: FontWeight.w900)
+                      .copyWith(color: AppTheme.accent),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    ' / ${strategy.totalScore}分',
-                    style: const TextStyle(
-                        fontSize: 16, color: AppTheme.textSecondary),
-                  ),
+                  child: Text('/ ${strategy.totalScore} 分',
+                      style: AppTheme.label(size: 14)),
                 ),
               ],
             ),
-            // 关键话术
             if (strategy.keyMessage != null &&
-                strategy.keyMessage!.isNotEmpty) ...[
+                strategy.keyMessage!.trim().isNotEmpty) ...[
               const SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.primary.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(8),
+                  color: AppTheme.accent.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('💬 ', style: TextStyle(fontSize: 16)),
+                    const Icon(Icons.lightbulb_outline,
+                        size: 16, color: AppTheme.accent),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         strategy.keyMessage!,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: AppTheme.textPrimary,
-                        ),
+                        style: AppTheme.body(size: 14, weight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -99,16 +89,16 @@ class StrategyHeaderWidget extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          border: Border.all(color: AppTheme.primary, width: 1),
+          border: Border.all(color: AppTheme.accent, width: 1),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.edit, size: 14, color: AppTheme.primary),
-            SizedBox(width: 4),
+            const Icon(Icons.edit, size: 14, color: AppTheme.accent),
+            const SizedBox(width: 4),
             Text('修改目标分',
-                style: TextStyle(fontSize: 12, color: AppTheme.primary)),
+                style: AppTheme.label(size: 12, color: AppTheme.accent)),
           ],
         ),
       ),
@@ -117,44 +107,46 @@ class StrategyHeaderWidget extends ConsumerWidget {
 
   void _showTargetScoreDialog(BuildContext context, WidgetRef ref) {
     final controller = TextEditingController();
-    final state = ref.read(strategyProvider);
-    if (state.strategy != null) {
-      controller.text = '${state.strategy!.targetScore}';
+    final current = ref.read(strategyProvider).strategy;
+    if (current != null) {
+      controller.text = '${current.targetScore}';
     }
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('修改目标分数'),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            hintText: '输入新目标分（30-150）',
-            border: OutlineInputBorder(),
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('修改目标分数'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              hintText: '输入新目标分（30-150）',
+              border: OutlineInputBorder(),
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final score = int.tryParse(controller.text);
-              if (score == null || score < 30 || score > 150) return;
-              Navigator.pop(ctx);
-              final changes = await ref
-                  .read(strategyProvider.notifier)
-                  .updateTargetScore(score);
-              if (changes != null && context.mounted) {
-                _showChangesDialog(context, changes);
-              }
-            },
-            child: const Text('确认'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx), child: const Text('取消')),
+            FilledButton(
+              onPressed: () async {
+                final score = int.tryParse(controller.text);
+                if (score == null || score < 30 || score > 150) return;
+
+                Navigator.pop(ctx);
+                final changes = await ref
+                    .read(strategyProvider.notifier)
+                    .updateTargetScore(score);
+
+                if (changes != null && context.mounted) {
+                  _showChangesDialog(context, changes);
+                }
+              },
+              child: const Text('确认'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -165,45 +157,52 @@ class StrategyHeaderWidget extends ConsumerWidget {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('策略变更'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (changes.upgradedToMust.isNotEmpty) ...[
-                const Text('升级为必须拿满：',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600, color: Color(0xFFE53935))),
-                const SizedBox(height: 4),
-                ...changes.upgradedToMust.map((c) => Padding(
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('策略变更'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (changes.upgradedToMust.isNotEmpty) ...[
+                  Text('升级为必须拿满：',
+                      style: AppTheme.body(
+                          size: 13,
+                          weight: FontWeight.w800,
+                          color: AppTheme.danger)),
+                  const SizedBox(height: 4),
+                  for (final change in changes.upgradedToMust)
+                    Padding(
                       padding: const EdgeInsets.only(left: 8, bottom: 2),
-                      child: Text('${c.questionRange}: ${c.oldAttitude} → ${c.newAttitude}'),
-                    )),
-                const SizedBox(height: 12),
-              ],
-              if (changes.downgraded.isNotEmpty) ...[
-                const Text('降级：',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textSecondary)),
-                const SizedBox(height: 4),
-                ...changes.downgraded.map((c) => Padding(
+                      child: Text(
+                          '${change.questionRange}: ${change.oldAttitude} -> ${change.newAttitude}'),
+                    ),
+                  const SizedBox(height: 10),
+                ],
+                if (changes.downgraded.isNotEmpty) ...[
+                  Text('降级项：',
+                      style: AppTheme.body(
+                          size: 13,
+                          weight: FontWeight.w800,
+                          color: AppTheme.muted)),
+                  const SizedBox(height: 4),
+                  for (final change in changes.downgraded)
+                    Padding(
                       padding: const EdgeInsets.only(left: 8, bottom: 2),
-                      child: Text('${c.questionRange}: ${c.oldAttitude} → ${c.newAttitude}'),
-                    )),
+                      child: Text(
+                          '${change.questionRange}: ${change.oldAttitude} -> ${change.newAttitude}'),
+                    ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-        actions: [
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('知道了'),
-          ),
-        ],
-      ),
+          actions: [
+            FilledButton(
+                onPressed: () => Navigator.pop(ctx), child: const Text('知道了')),
+          ],
+        );
+      },
     );
   }
 }

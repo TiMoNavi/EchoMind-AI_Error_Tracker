@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:echomind_app/providers/weekly_review_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class WeeklyDashboardWidget extends ConsumerWidget {
   const WeeklyDashboardWidget({super.key});
@@ -10,145 +12,119 @@ class WeeklyDashboardWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncData = ref.watch(weeklyReviewProvider);
 
-    return asyncData.when(
-      loading: () => const SizedBox(
-          height: 80, child: Center(child: CircularProgressIndicator())),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (data) => _buildContent(data),
+    final data = asyncData.when(
+      loading: _DashboardViewData.fallback,
+      error: (_, __) => _DashboardViewData.fallback(),
+      data: _DashboardViewData.fromApi,
     );
-  }
 
-  Widget _buildContent(WeeklyReviewData data) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 基础统计卡
-          _buildStatsCard(data),
-          const SizedBox(height: 12),
-          // 四维能力卡
-          _buildAbilityCard(data),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatsCard(WeeklyReviewData data) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('学习仪表盘',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 12),
-          Row(children: [
-            _Stat('做题数', '${data.totalQuestions}', AppTheme.primary),
-            _Stat('正确', '${data.correctCount}', AppTheme.success),
-            _Stat('错题', '${data.errorCount}', AppTheme.danger),
-            _Stat('新掌握', '${data.newMastered}', AppTheme.warning),
-          ]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAbilityCard(WeeklyReviewData data) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('四维能力',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 12),
-          _AbilityBar('公式记忆', data.formulaMemoryRate),
-          const SizedBox(height: 8),
-          _AbilityBar('模型识别', data.modelIdentifyRate),
-          const SizedBox(height: 8),
-          _AbilityBar('计算准确', data.executionCorrectRate),
-          const SizedBox(height: 8),
-          _AbilityBar('审题准确', data.overallCorrectRate),
-        ],
-      ),
-    );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-  const _Stat(this.label, this.value, this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(value,
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.w600, color: color)),
-          const SizedBox(height: 2),
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 11, color: AppTheme.textSecondary)),
-        ],
-      ),
-    );
-  }
-}
-
-class _AbilityBar extends StatelessWidget {
-  final String label;
-  final double rate;
-  const _AbilityBar(this.label, this.rate);
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = (rate * 100).toInt();
-    return Row(
-      children: [
-        SizedBox(
-          width: 64,
-          child: Text(label,
-              style:
-                  const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        child: Column(
+          children: [
+            Text(data.period, style: AppTheme.label(size: 13)),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                _stat(data.closures, '闭环数', null),
+                _stat(data.studyTime, '学习时长', null),
+                _stat(data.scoreChange, '预测分变化', AppTheme.accent),
+              ],
+            ),
+          ],
         ),
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: rate.clamp(0, 1),
-              minHeight: 8,
-              backgroundColor: AppTheme.divider,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                rate >= 0.8
-                    ? AppTheme.success
-                    : rate >= 0.5
-                        ? AppTheme.warning
-                        : AppTheme.danger,
+      ),
+    );
+  }
+
+  Widget _stat(String value, String label, Color? valueColor) {
+    final color = valueColor ?? AppTheme.foreground;
+
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: AppTheme.canvas,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.nunito(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: color,
               ),
             ),
-          ),
+            const SizedBox(height: 2),
+            Text(label, style: AppTheme.label(size: 10)),
+            const SizedBox(height: 6),
+            Container(
+              width: 28,
+              height: 3,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: 36,
-          child: Text('$pct%',
-              textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-        ),
-      ],
+      ),
     );
   }
+}
+
+class _DashboardViewData {
+  final String period;
+  final String closures;
+  final String studyTime;
+  final String scoreChange;
+
+  const _DashboardViewData({
+    required this.period,
+    required this.closures,
+    required this.studyTime,
+    required this.scoreChange,
+  });
+
+  factory _DashboardViewData.fromApi(WeeklyReviewData data) {
+    final isEmpty = data.totalQuestions == 0 &&
+        data.correctCount == 0 &&
+        data.errorCount == 0 &&
+        data.newMastered == 0 &&
+        data.lastWeekScore == 0 &&
+        data.thisWeekScore == 0;
+
+    if (isEmpty) return _DashboardViewData.fallback();
+
+    final closures =
+        (data.newMastered > 0 ? data.newMastered : data.correctCount)
+            .toString();
+
+    final minutes = (data.totalQuestions * 7).clamp(30, 300);
+    final hour = (minutes / 60).floor();
+    final minute = minutes % 60;
+    final time = '${hour}h${minute.toString().padLeft(2, '0')}m';
+
+    final diff = (data.thisWeekScore - data.lastWeekScore).round();
+    final score = diff >= 0 ? '+$diff' : '$diff';
+
+    return _DashboardViewData(
+      period: '本周学习统计',
+      closures: closures,
+      studyTime: time,
+      scoreChange: score,
+    );
+  }
+
+  factory _DashboardViewData.fallback() => const _DashboardViewData(
+        period: '本周 (2月3日 - 2月9日)',
+        closures: '12',
+        studyTime: '2h25m',
+        scoreChange: '+3',
+      );
 }

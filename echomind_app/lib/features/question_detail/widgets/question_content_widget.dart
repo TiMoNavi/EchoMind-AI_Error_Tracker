@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/question_detail_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class QuestionContentWidget extends ConsumerWidget {
   final String questionId;
+
   const QuestionContentWidget({super.key, required this.questionId});
 
   @override
@@ -12,35 +14,88 @@ class QuestionContentWidget extends ConsumerWidget {
     final detail = ref.watch(questionDetailProvider(questionId));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: detail.when(
-        loading: () => const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator())),
-        error: (_, __) => _buildCard(null, null),
-        data: (d) => _buildCard(d.content, d.options),
+        loading: () => _buildCard(
+          source: '正在加载题目信息',
+          content: '题干内容加载中，请稍候...',
+          optionLines: const [],
+        ),
+        error: (_, __) => _buildCard(
+          source: '来源未知',
+          content: '暂无题干数据，接口恢复后会自动展示真实内容。',
+          optionLines: const [],
+        ),
+        data: (d) => _buildCard(
+          source: _safeText(d.source, fallback: '来源未知'),
+          content: _safeText(d.content, fallback: '暂无题干数据，接口恢复后会自动展示真实内容。'),
+          optionLines: _optionLines(d.options),
+        ),
       ),
     );
   }
 
-  Widget _buildCard(String? content, String? options) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('题干', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          Text(
-            content ?? '如图所示，真空中两个等量异种点电荷+Q和-Q固定在x轴上，关于它们连线的中垂线上各点的电场强度和电势，下列说法正确的是（  ）',
-            style: const TextStyle(fontSize: 14, height: 1.6),
-          ),
-          if (options != null) ...[
-            const SizedBox(height: 8),
-            Text(options, style: const TextStyle(fontSize: 14, height: 1.6)),
+  Widget _buildCard({
+    required String source,
+    required String content,
+    required List<String> optionLines,
+  }) {
+    return ClayCard(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppTheme.canvas,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              source,
+              style: AppTheme.label(size: 12),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              content,
+              style: AppTheme.body(size: 15, weight: FontWeight.w600),
+            ),
+            if (optionLines.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(
+                optionLines.join('\n'),
+                style: AppTheme.body(size: 15, weight: FontWeight.w600),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
+  }
+
+  String _safeText(String? value, {required String fallback}) {
+    final t = value?.trim() ?? '';
+    return t.isEmpty ? fallback : t;
+  }
+
+  List<String> _optionLines(String? raw) {
+    final text = raw?.trim() ?? '';
+    if (text.isEmpty) return const [];
+
+    final lines = text
+        .split(RegExp(r'[\r\n]+'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    if (lines.length > 1) return lines;
+
+    final chunks = text
+        .split(RegExp(r'[；;]'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    return chunks.length > 1 ? chunks : [text];
   }
 }

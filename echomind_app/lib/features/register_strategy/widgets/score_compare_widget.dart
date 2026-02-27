@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/strategy_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class ScoreCompareWidget extends ConsumerWidget {
   const ScoreCompareWidget({super.key});
@@ -12,24 +13,21 @@ class ScoreCompareWidget extends ConsumerWidget {
     final strategy = state.strategy;
     if (strategy == null) return const SizedBox.shrink();
 
-    final hasLower = strategy.vsLower != null && strategy.vsLower!.isNotEmpty;
-    final hasHigher = strategy.vsHigher != null && strategy.vsHigher!.isNotEmpty;
+    final hasLower =
+        strategy.vsLower != null && strategy.vsLower!.trim().isNotEmpty;
+    final hasHigher =
+        strategy.vsHigher != null && strategy.vsHigher!.trim().isNotEmpty;
     if (!hasLower && !hasHigher) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('分数档对比',
-                style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w600)),
+            Text('分档对比',
+                style: AppTheme.heading(size: 18, weight: FontWeight.w900)),
             const SizedBox(height: 10),
             if (hasLower)
               _buildCompareItem(
@@ -43,7 +41,7 @@ class ScoreCompareWidget extends ConsumerWidget {
               _buildCompareItem(
                 icon: Icons.arrow_upward_rounded,
                 color: AppTheme.warning,
-                label: '比高档允许放弃',
+                label: '比高档可放宽',
                 text: strategy.vsHigher!,
               ),
           ],
@@ -68,14 +66,11 @@ class ScoreCompareWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: color)),
+                  style: AppTheme.body(
+                      size: 12, weight: FontWeight.w800, color: color)),
               const SizedBox(height: 2),
               Text(text,
-                  style: const TextStyle(
-                      fontSize: 13, color: AppTheme.textPrimary)),
+                  style: AppTheme.body(size: 13, weight: FontWeight.w700)),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:echomind_app/app/app_routes.dart';
 import 'package:echomind_app/providers/recommendations_provider.dart';
@@ -9,10 +10,10 @@ class RecommendationListWidget extends ConsumerWidget {
   const RecommendationListWidget({super.key});
 
   static const _mockItems = [
-    (icon: '!', title: '待诊断: 2025天津模拟 第5题', tags: ['待诊断', '上传于今日'], route: AppRoutes.aiDiagnosis),
-    (icon: 'L1', title: '板块运动 -- 建模层训练', tags: ['本周错2次', '约5分钟'], route: AppRoutes.modelDetail),
-    (icon: 'KP', title: '库仑定律适用条件 -- 知识补强', tags: ['理解不深', '约3分钟'], route: AppRoutes.knowledgeDetail),
-    (icon: '~', title: '牛顿第二定律应用 -- 不稳定', tags: ['掌握不稳定', '14天未练习'], route: AppRoutes.modelDetail),
+    (icon: Icons.error_outline_rounded, gradient: AppTheme.gradientPink, title: '待诊断: 2025天津模拟 第5题', tags: ['待诊断', '上传于今日'], route: AppRoutes.aiDiagnosis, isUrgent: true),
+    (icon: Icons.layers_rounded, gradient: AppTheme.gradientPrimary, title: '板块运动 — 建模层训练', tags: ['本周错2次', '约5分钟'], route: AppRoutes.modelDetail, isUrgent: false),
+    (icon: Icons.lightbulb_outline_rounded, gradient: AppTheme.gradientBlue, title: '库仑定律适用条件 — 知识补强', tags: ['理解不深', '约3分钟'], route: AppRoutes.knowledgeDetail, isUrgent: false),
+    (icon: Icons.show_chart_rounded, gradient: AppTheme.gradientGreen, title: '牛顿第二定律应用 — 不稳定', tags: ['掌握不稳定', '14天未练习'], route: AppRoutes.modelDetail, isUrgent: false),
   ];
 
   @override
@@ -20,12 +21,12 @@ class RecommendationListWidget extends ConsumerWidget {
     final recs = ref.watch(recommendationsProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('推荐学习', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          Text('推荐学习', style: AppTheme.heading(size: 20, weight: FontWeight.w800)),
+          const SizedBox(height: 12),
           recs.when(
             loading: () => const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator())),
             error: (_, __) => _buildMockList(context),
@@ -40,8 +41,8 @@ class RecommendationListWidget extends ConsumerWidget {
     return Column(children: [
       for (final item in items)
         _RecItem(
-          icon: item.targetType == 'knowledge' ? 'KP' : 'L${item.currentLevel}',
-          color: item.isUnstable ? AppTheme.danger : AppTheme.primary,
+          icon: item.targetType == 'knowledge' ? Icons.lightbulb_outline_rounded : Icons.layers_rounded,
+          gradient: item.isUnstable ? AppTheme.gradientPink : AppTheme.gradientPrimary,
           title: item.targetName,
           tags: [
             if (item.errorCount > 0) '错${item.errorCount}次',
@@ -60,46 +61,132 @@ class RecommendationListWidget extends ConsumerWidget {
   Widget _buildMockList(BuildContext context) {
     return Column(children: [
       for (final item in _mockItems)
-        _RecItem(icon: item.icon, color: AppTheme.primary, title: item.title, tags: item.tags, onTap: () => context.push(item.route)),
+        item.isUrgent
+            ? _UrgentRecItem(
+                icon: item.icon, gradient: item.gradient,
+                title: item.title, tags: item.tags,
+                onTap: () => context.push(item.route),
+              )
+            : _RecItem(
+                icon: item.icon, gradient: item.gradient,
+                title: item.title, tags: item.tags,
+                onTap: () => context.push(item.route),
+              ),
     ]);
   }
 }
 
-class _RecItem extends StatelessWidget {
-  final String icon;
-  final Color color;
+// ─── Urgent Recommendation Item (pink left border) ───
+class _UrgentRecItem extends StatelessWidget {
+  final IconData icon;
+  final LinearGradient gradient;
   final String title;
   final List<String> tags;
   final VoidCallback onTap;
-  const _RecItem({required this.icon, required this.color, required this.title, required this.tags, required this.onTap});
+  const _UrgentRecItem({
+    required this.icon, required this.gradient,
+    required this.title, required this.tags, required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(color: AppTheme.surface, borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-        child: Row(children: [
-          Container(
-            width: 40, height: 40,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-            alignment: Alignment.center,
-            child: Text(icon, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+            boxShadow: AppTheme.shadowClayCard,
+            border: const Border(
+              left: BorderSide(color: Color(0xFFDB2777), width: 4),
+            ),
           ),
-          const SizedBox(width: 12),
+          child: Row(children: [
+            _GradientIconOrb(icon: icon, gradient: gradient, size: 48),
+            const SizedBox(width: 14),
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                  style: AppTheme.body(size: 16).copyWith(fontWeight: FontWeight.w700),
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 6),
+                Wrap(spacing: 6, children: [for (final t in tags) _Tag(t)]),
+              ],
+            )),
+            const Icon(Icons.chevron_right_rounded, size: 22, color: AppTheme.muted),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Normal Recommendation Item ───
+class _RecItem extends StatelessWidget {
+  final IconData icon;
+  final LinearGradient gradient;
+  final String title;
+  final List<String> tags;
+  final VoidCallback onTap;
+  const _RecItem({
+    required this.icon, required this.gradient,
+    required this.title, required this.tags, required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ClayCard(
+        radius: AppTheme.radiusXl,
+        padding: const EdgeInsets.all(14),
+        onTap: onTap,
+        child: Row(children: [
+          _GradientIconOrb(icon: icon, gradient: gradient, size: 44),
+          const SizedBox(width: 14),
           Expanded(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
-              const SizedBox(height: 4),
+              Text(title,
+                style: AppTheme.body(size: 15).copyWith(fontWeight: FontWeight.w600),
+                maxLines: 1, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 6),
               Wrap(spacing: 6, children: [for (final t in tags) _Tag(t)]),
             ],
           )),
-          const Icon(Icons.chevron_right, size: 20, color: AppTheme.textSecondary),
+          const Icon(Icons.chevron_right_rounded, size: 22, color: AppTheme.muted),
         ]),
       ),
+    );
+  }
+}
+
+class _GradientIconOrb extends StatelessWidget {
+  final IconData icon;
+  final LinearGradient gradient;
+  final double size;
+  const _GradientIconOrb({required this.icon, required this.gradient, this.size = 44});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size, height: size,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(size * 0.32),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(4, 4), blurRadius: 10,
+            color: gradient.colors.last.withValues(alpha: 0.3),
+          ),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: Icon(icon, color: Colors.white, size: size * 0.5),
     );
   }
 }
@@ -111,9 +198,12 @@ class _Tag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(color: AppTheme.background, borderRadius: BorderRadius.circular(4)),
-      child: Text(text, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppTheme.accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(text, style: AppTheme.label(size: 11, color: AppTheme.accent)),
     );
   }
 }

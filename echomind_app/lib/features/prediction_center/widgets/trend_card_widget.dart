@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/prediction_provider.dart';
+import 'package:echomind_app/shared/theme/app_theme.dart';
+import 'package:echomind_app/shared/widgets/clay_card.dart';
 
 class TrendCardWidget extends ConsumerWidget {
   const TrendCardWidget({super.key});
@@ -12,34 +13,31 @@ class TrendCardWidget extends ConsumerWidget {
 
     return prediction.when(
       loading: () => const SizedBox(
-          height: 150, child: Center(child: CircularProgressIndicator())),
-      error: (_, __) => const SizedBox.shrink(),
+        height: 150,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => _buildCard(const []),
       data: (d) => _buildCard(d.trend),
     );
   }
 
   Widget _buildCard(List<TrendPoint> points) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-            color: AppTheme.surface,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClayCard(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('预测分趋势',
-                style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w600)),
+            Text('预测分走势',
+                style: AppTheme.heading(size: 18, weight: FontWeight.w900)),
             const SizedBox(height: 12),
             if (points.isEmpty)
-              const SizedBox(
-                height: 80,
+              SizedBox(
+                height: 90,
                 child: Center(
-                  child: Text('数据积累中，上传更多题目后展示趋势',
-                      style: TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary)),
+                  child: Text('数据积累中，上传更多题目后显示趋势。',
+                      style: AppTheme.label(size: 12)),
                 ),
               )
             else
@@ -59,36 +57,65 @@ class TrendCardWidget extends ConsumerWidget {
 
 class _TrendPainter extends CustomPainter {
   final List<TrendPoint> points;
+
   const _TrendPainter(this.points);
 
   @override
   void paint(Canvas canvas, Size size) {
     if (points.isEmpty) return;
-    final paint = Paint()..color = AppTheme.primary..strokeWidth = 2..style = PaintingStyle.stroke;
-    final dotPaint = Paint()..color = AppTheme.primary;
 
     final values = points.map((p) => p.value).toList();
-    final minY = (values.reduce((a, b) => a < b ? a : b) - 10).clamp(0.0, 100.0);
-    final maxY = values.reduce((a, b) => a > b ? a : b) + 10;
-    final h = size.height - 24;
-    final step = size.width / (points.length - 1);
+    final minY =
+        (values.reduce((a, b) => a < b ? a : b) - 10).clamp(0.0, 100.0);
+    final maxY =
+        (values.reduce((a, b) => a > b ? a : b) + 10).clamp(0.0, 120.0);
+    final span = (maxY - minY).abs() < 0.001 ? 1.0 : (maxY - minY);
+
+    final chartHeight = size.height - 24;
+    final hasOne = points.length == 1;
+    final step = hasOne ? 0.0 : size.width / (points.length - 1);
+
+    final linePaint = Paint()
+      ..color = AppTheme.accent
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final dotPaint = Paint()..color = AppTheme.accent;
+    final dotHaloPaint = Paint()
+      ..color = AppTheme.accent.withValues(alpha: 0.15);
 
     final path = Path();
-    for (var i = 0; i < points.length; i++) {
-      final x = i * step;
-      final y = h - ((points[i].value - minY) / (maxY - minY)) * h;
-      if (i == 0) path.moveTo(x, y); else path.lineTo(x, y);
-      canvas.drawCircle(Offset(x, y), 3, dotPaint);
 
-      final tp = TextPainter(
-        text: TextSpan(text: points[i].label, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+    for (var i = 0; i < points.length; i++) {
+      final x = hasOne ? size.width / 2 : i * step;
+      final y = chartHeight - ((points[i].value - minY) / span) * chartHeight;
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+
+      canvas.drawCircle(Offset(x, y), 7, dotHaloPaint);
+      canvas.drawCircle(Offset(x, y), 3.5, dotPaint);
+
+      final textPainter = TextPainter(
+        text: TextSpan(text: points[i].label, style: AppTheme.label(size: 10)),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas, Offset(x - tp.width / 2, size.height - 14));
+
+      textPainter.paint(
+          canvas, Offset(x - textPainter.width / 2, size.height - 14));
     }
-    canvas.drawPath(path, paint);
+
+    if (!hasOne) {
+      canvas.drawPath(path, linePaint);
+    }
   }
 
   @override
-  bool shouldRepaint(covariant _TrendPainter old) => old.points != points;
+  bool shouldRepaint(covariant _TrendPainter oldDelegate) {
+    return oldDelegate.points != points;
+  }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:echomind_app/shared/theme/app_theme.dart';
 import 'package:echomind_app/providers/community_provider.dart';
-import 'package:echomind_app/models/community.dart';
+import 'package:echomind_app/models/community.dart' as community_models;
 
 class BoardFeedbackWidget extends ConsumerStatefulWidget {
   const BoardFeedbackWidget({super.key});
@@ -151,7 +151,7 @@ class _BoardFeedbackWidgetState extends ConsumerState<BoardFeedbackWidget> {
 }
 
 class _FeedbackCard extends StatelessWidget {
-  final Feedback feedback;
+  final community_models.Feedback feedback;
   const _FeedbackCard({required this.feedback});
 
   static const _typeLabels = {
