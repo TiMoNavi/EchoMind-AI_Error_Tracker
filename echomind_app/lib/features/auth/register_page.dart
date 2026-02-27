@@ -16,9 +16,25 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _phoneCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _nicknameCtrl = TextEditingController();
-  String _regionId = '天津';
-  String _subject = '物理';
+  String _regionId = 'tianjin';
+  String _subject = 'physics';
   int _targetScore = 70;
+
+  // 中文显示 → 英文 API 值映射
+  static const _regionMap = {
+    '天津': 'tianjin',
+    '北京': 'beijing',
+    '上海': 'shanghai',
+    '全国卷': 'national',
+  };
+  static const _subjectMap = {
+    '物理': 'physics',
+    '数学': 'math',
+    '化学': 'chemistry',
+  };
+  // 反向映射：英文 → 中文（用于 Dropdown 显示）
+  static final _regionDisplayMap = {for (final e in _regionMap.entries) e.value: e.key};
+  static final _subjectDisplayMap = {for (final e in _subjectMap.entries) e.value: e.key};
 
   Future<void> _register() async {
     final ok = await ref.read(authProvider.notifier).register(
@@ -55,11 +71,17 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           const SizedBox(height: 12),
           _Input(controller: _nicknameCtrl, hint: '昵称（选填）'),
           const SizedBox(height: 12),
-          _DropdownField(label: '地区', value: _regionId, items: const ['天津', '北京', '上海', '全国卷'],
-              onChanged: (v) => setState(() => _regionId = v!)),
+          _DropdownField(
+              label: '地区',
+              value: _regionDisplayMap[_regionId] ?? '天津',
+              items: const ['天津', '北京', '上海', '全国卷'],
+              onChanged: (v) => setState(() => _regionId = _regionMap[v!] ?? 'tianjin')),
           const SizedBox(height: 12),
-          _DropdownField(label: '科目', value: _subject, items: const ['物理', '数学', '化学'],
-              onChanged: (v) => setState(() => _subject = v!)),
+          _DropdownField(
+              label: '科目',
+              value: _subjectDisplayMap[_subject] ?? '物理',
+              items: const ['物理', '数学', '化学'],
+              onChanged: (v) => setState(() => _subject = _subjectMap[v!] ?? 'physics')),
           const SizedBox(height: 12),
           _ScoreSlider(value: _targetScore, onChanged: (v) => setState(() => _targetScore = v)),
           if (auth.error != null) ...[
